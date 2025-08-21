@@ -1,0 +1,134 @@
+/* Explore page specific styles */
+.nav-btn.active {
+    background-color: var(--light-lavender);
+    transform: scale(1.05);
+}
+
+.explore-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.explore-header h1 {
+    color: var(--dark-text);
+    font-size: 2rem;
+    margin: 0;
+}
+
+.search-bar {
+    position: relative;
+    width: 300px;
+}
+
+.search-bar i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--dusty-blue);
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border: 1px solid var(--sidebar-bg);
+    border-radius: 25px;
+    background-color: var(--lightest-bg);
+    color: var(--dark-text);
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: var(--dusty-blue);
+    box-shadow: 0 0 0 3px rgba(136, 151, 170, 0.3);
+}
+
+.explore-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 0 20px;
+}
+
+.explore-post {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.explore-post:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.explore-post img,
+.explore-post video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.explore-post-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: white;
+    font-size: 1.2rem;
+    gap: 20px;
+}
+
+.explore-post:hover .explore-post-overlay {
+    opacity: 1;
+}
+
+.explore-post-stats {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.explore-post-stats i {
+    font-size: 1.5rem;
+}
+
+.no-posts-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--dusty-blue);
+    font-size: 1.2rem;
+    margin-top: 50px;
+}
+
+@media (max-width: 768px) {
+    .explore-header {
+        flex-direction: column;
+        gap: 20px;
+        align-items: stretch;
+    }
+    
+    .search-bar {
+        width: 100%;
+    }
+    
+    .explore-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+        padding: 0 15px;
+    }
+}

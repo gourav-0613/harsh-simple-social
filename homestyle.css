@@ -48,7 +48,7 @@ body {
 
 .container {
   display: grid;
-  grid-template-columns: 80px 1fr 350px;
+  grid-template-columns: 120px 1fr 350px;
   height: 100vh;
   transition: filter 0.3s ease-in-out;
 }
@@ -63,7 +63,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
+  gap: 25px;
   padding-top: 60px;
   transition: background-color 0.3s ease;
 }
@@ -73,9 +73,9 @@ body {
   color: var(--lightest-bg);
   border: none;
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  font-size: 1.2rem;
+  width: 50px;
+  height: 50px;
+  font-size: 1rem;
   cursor: pointer;
   position: relative;
   transition: 0.3s ease;
@@ -83,10 +83,10 @@ body {
 
 .nav-btn span {
   position: absolute;
-  bottom: -20px;
+  bottom: -18px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   color: var(--dark-text);
   transition: color 0.3s ease;
 }
@@ -135,6 +135,53 @@ body {
 
 .hidden { display: none !important; }
 
+/* Stories Section */
+.stories-container {
+  display: flex;
+  gap: 15px;
+  padding: 20px 0;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--post-border);
+  margin-bottom: 20px;
+}
+
+.story-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  min-width: 70px;
+}
+
+.story-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+  background-size: cover;
+  background-position: center;
+}
+
+.add-story .story-avatar {
+  background: var(--dusty-blue);
+}
+
+.story-item span {
+  font-size: 0.8rem;
+  color: var(--dark-text);
+  text-align: center;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* --- Styles for the dynamic posts on the home page --- */
 #posts-container {
   width: 100%;
@@ -154,15 +201,135 @@ body {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
+.post-header {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  gap: 12px;
+}
+
+.post-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--dusty-blue);
+  background-size: cover;
+  background-position: center;
+}
+
+.post-user-info {
+  flex-grow: 1;
+}
+
+.post-username {
+  font-weight: bold;
+  color: var(--dark-text);
+  margin: 0;
+}
+
+.post-location {
+  font-size: 0.9rem;
+  color: var(--dusty-blue);
+  margin: 0;
+}
+
 .post-box img, .post-box video {
   width: 100%;
   height: auto;
   display: block;
 }
 
-.post-box .caption {
+.post-actions {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  gap: 15px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--dark-text);
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+.action-btn.liked {
+  color: #e74c3c;
+}
+
+.post-stats {
+  padding: 0 20px 10px;
+}
+
+.likes-count {
+  font-weight: bold;
+  color: var(--dark-text);
+  margin-bottom: 5px;
+}
+
+.post-caption {
   padding: 15px 20px;
   font-size: 1rem;
+}
+
+.post-caption .username {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.post-time {
+  padding: 0 20px 15px;
+  font-size: 0.8rem;
+  color: var(--dusty-blue);
+  text-transform: uppercase;
+}
+
+.comments-section {
+  padding: 0 20px 15px;
+}
+
+.comment {
+  margin-bottom: 8px;
+}
+
+.comment .username {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.add-comment {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-top: 1px solid var(--post-border);
+}
+
+.add-comment input {
+  flex-grow: 1;
+  border: none;
+  background: transparent;
+  color: var(--dark-text);
+  font-size: 1rem;
+  padding: 8px 0;
+}
+
+.add-comment input:focus {
+  outline: none;
+}
+
+.add-comment button {
+  background: none;
+  border: none;
+  color: var(--dusty-blue);
+  font-weight: bold;
+  cursor: pointer;
+  padding: 8px 12px;
 }
 
 .no-posts-message {
@@ -197,6 +364,23 @@ body {
   resize: vertical;
   color: var(--dark-text);
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.location-input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid var(--sidebar-bg);
+  background-color: var(--input-bg);
+  color: var(--dark-text);
+  font-size: 1rem;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.location-input:focus {
+  outline: none;
+  border-color: var(--dusty-blue);
 }
 
 /* This is the preview area for the image/video */

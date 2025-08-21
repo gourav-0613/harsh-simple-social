@@ -68,6 +68,11 @@
           <h1 class="form-title">Register</h1>
           <form method="post" action="register.php">
             <div class="input-group">
+               <i class="fas fa-at"></i>
+               <input type="text" name="username" id="username" placeholder="Username" required>
+               <label for="username">Username</label>
+            </div>
+            <div class="input-group">
                <i class="fas fa-user"></i>
                <input type="text" name="fName" id="fName" placeholder="First Name" required>
                <label for="fname">First Name</label>

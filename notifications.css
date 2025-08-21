@@ -1,0 +1,151 @@
+/* Notifications page specific styles */
+.notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.notifications-header h1 {
+    color: var(--dark-text);
+    font-size: 2rem;
+    margin: 0;
+}
+
+.mark-all-read-btn {
+    background-color: var(--dusty-blue);
+    color: var(--lightest-bg);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.mark-all-read-btn:hover {
+    background-color: var(--light-lavender);
+}
+
+.notifications-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.notification-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--post-border);
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.notification-item:hover {
+    background-color: var(--sidebar-bg);
+}
+
+.notification-item.unread {
+    background-color: rgba(136, 151, 170, 0.1);
+}
+
+.notification-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--dusty-blue);
+    background-size: cover;
+    background-position: center;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    flex-grow: 1;
+}
+
+.notification-text {
+    color: var(--dark-text);
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+}
+
+.notification-text .username {
+    font-weight: bold;
+}
+
+.notification-time {
+    color: var(--dusty-blue);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.notification-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 15px;
+    flex-shrink: 0;
+}
+
+.notification-icon.like {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.notification-icon.comment {
+    background-color: var(--dusty-blue);
+    color: white;
+}
+
+.notification-icon.follow {
+    background-color: var(--light-lavender);
+    color: white;
+}
+
+.notification-icon.message {
+    background-color: #3498db;
+    color: white;
+}
+
+.no-notifications-message {
+    text-align: center;
+    color: var(--dusty-blue);
+    font-size: 1.2rem;
+    margin-top: 50px;
+    padding: 40px 20px;
+}
+
+@media (max-width: 768px) {
+    .notifications-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .mark-all-read-btn {
+        width: 100%;
+    }
+    
+    .notification-item {
+        padding: 12px 15px;
+    }
+    
+    .notification-avatar {
+        width: 40px;
+        height: 40px;
+        margin-right: 12px;
+    }
+    
+    .notification-text {
+        font-size: 0.9rem;
+    }
+    
+    .notification-time {
+        font-size: 0.8rem;
+    }
+}
