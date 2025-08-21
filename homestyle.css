@@ -1,0 +1,342 @@
+
+/* Dark Mode Color Palette (from user's image) */
+:root {
+  /* Default Light Mode Colors */
+  --lightest-bg: #EDECF2;
+  --sidebar-bg: rgba(216, 226, 235, 0.8);
+  --dusty-blue: #8897AA;
+  --light-lavender: #C8C7D7;
+  --dark-text: #5A6776;
+  --warm-cream-popup: #D6E4FF; /* Bluish tone to match theme */
+  --post-bg: rgba(255, 255, 255, 0.7);
+  --post-border: #D1E8EE;
+  --input-bg: #EDECF2; /* For inputs like textarea in create post */
+}
+
+/* Dark Mode Overrides for homestyle.css */
+html.dark-mode {
+  /* NEW Dark Mode Palette */
+  --lightest-bg: #121212; /* charcoal black */
+  --sidebar-bg: #2a2a2a; /* Lighter charcoal for component backgrounds */
+  --dusty-blue: #888888; /* soft gray */
+  --light-lavender: #B0B0B0; /* medium gray */
+  --dark-text: #E0E0E0; /* light gray */
+  --warm-cream-popup: #2a2a2a; /* Lighter charcoal for popups */
+  --post-bg: #2a2a2a; /* Lighter charcoal for posts */
+  --post-border: #444444; /* dark gray */
+  --input-bg: #444444; /* dark gray for inputs */
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--lightest-bg);
+  color: var(--dark-text); /* Apply dark-text to body for default text */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for theme change */
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 80px 1fr 350px;
+  height: 100vh;
+  transition: filter 0.3s ease-in-out;
+}
+
+.container.blur-it {
+  filter: blur(5px) brightness(0.9);
+  pointer-events: none;
+}
+
+.sidebar {
+  background-color: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding-top: 60px;
+  transition: background-color 0.3s ease;
+}
+
+.nav-btn {
+  background-color: var(--dusty-blue);
+  color: var(--lightest-bg);
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  position: relative;
+  transition: 0.3s ease;
+}
+
+.nav-btn span {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: var(--dark-text);
+  transition: color 0.3s ease;
+}
+
+.nav-btn:hover {
+  background-color: var(--light-lavender);
+  transform: scale(1.05);
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding: 60px;
+  overflow-y: auto;
+}
+
+.right-panel {
+  position: relative;
+  padding: 40px;
+}
+
+.top-buttons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+.top-btn {
+  background-color: var(--dusty-blue);
+  color: var(--lightest-bg);
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.top-btn:hover {
+  background-color: var(--light-lavender);
+}
+
+.hidden { display: none !important; }
+
+/* --- Styles for the dynamic posts on the home page --- */
+#posts-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.post-box {
+  background-color: var(--post-bg);
+  border: 1px solid var(--post-border);
+  border-radius: 30px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  color: var(--dark-text);
+  overflow: hidden;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.post-box img, .post-box video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.post-box .caption {
+  padding: 15px 20px;
+  font-size: 1rem;
+}
+
+.no-posts-message {
+  color: var(--dusty-blue);
+  font-size: 1.2rem;
+}
+
+/* --- Styles for the new "Create Post" page --- */
+#post-page-content {
+  color: var(--dark-text);
+  background-color: var(--warm-cream-popup);
+  padding: 40px;
+  border-radius: 30px;
+  width: 80%;
+  max-width: 800px;
+  text-align: center;
+  position: relative;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#post-page-content h1 { margin-bottom: 20px; }
+
+#post-page-content textarea {
+  width: 100%;
+  height: 100px;
+  border-radius: 10px;
+  border: 1px solid var(--sidebar-bg);
+  background-color: var(--input-bg); /* Use new input background variable */
+  padding: 15px;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  resize: vertical;
+  color: var(--dark-text);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* This is the preview area for the image/video */
+#media-preview-container {
+    width: 100%;
+    max-height: 400px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    background-color: var(--sidebar-bg); /* Use sidebar bg for preview container */
+    display: none;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+
+#media-preview-container img, #media-preview-container video {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: 15px;
+}
+
+/* This makes the file input look like a nice button */
+.file-input-label {
+    background-color: var(--dusty-blue);
+    color: var(--lightest-bg);
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.file-input-label:hover {
+    background-color: var(--light-lavender);
+}
+
+#file-input {
+    display: none;
+}
+
+.close-btn {
+  color: var(--dusty-blue);
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  font-size: 35px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+/* --- Popup Styles --- */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(40, 40, 40, 0.6);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background-color: var(--warm-cream-popup);
+  padding: 30px 40px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  position: relative;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.popup-content h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--dark-text);
+  transition: color 0.3s ease;
+}
+
+.popup-content p {
+  margin-bottom: 25px;
+  color: var(--dusty-blue);
+  line-height: 1.6;
+  transition: color 0.3s ease;
+}
+
+.popup-buttons { display: flex; justify-content: center; gap: 15px; }
+
+.popup-btn {
+  padding: 10px 25px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s ease, color 0.3s ease;
+}
+
+.popup-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.popup-btn.confirm {
+  background-color: var(--dusty-blue);
+  color: var(--warm-cream-popup);
+}
+
+.popup-btn.cancel {
+  background-color: var(--sidebar-bg);
+  color: var(--dark-text);
+}
+
+.popup-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: var(--light-lavender);
+  transition: color 0.2s;
+}
+
+.popup-close-btn:hover {
+  color: var(--dusty-blue);
+}
+
+.post-author {
+  color: var(--dusty-blue);
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  max-width: 600px;
+  width: 100%;
+}
