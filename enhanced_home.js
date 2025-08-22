@@ -28,6 +28,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const mainContainer = document.getElementById('main-container');
     const postsContainer = document.getElementById('posts-container');
     const storiesContainer = document.getElementById('stories-container');
+    const cropContainer = document.getElementById('crop-container');
+    const cropCanvas = document.getElementById('crop-canvas');
+    const cropBtn = document.getElementById('crop-btn');
+    const cancelCropBtn = document.getElementById('cancel-crop-btn');
+    
+    let currentImageFile = null;
+    let cropperInstance = null;
     
     // Function to add animation class to container
     function addAnimation(animationClass) {
@@ -67,16 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
             addAnimation('blur-it');
             setTimeout(() => {
                 window.location.href = 'explore.php';
-            }, 300);
-        });
-    }
-    
-    // Reels button
-    if (reelsBtn) {
-        reelsBtn.addEventListener('click', function() {
-            addAnimation('blur-it');
-            setTimeout(() => {
-                window.location.href = 'reels.php';
             }, 300);
         });
     }
@@ -125,8 +122,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 captionInput.value = '';
                 locationInput.value = '';
                 fileInput.value = '';
+                currentImageFile = null;
                 mediaPreviewContainer.innerHTML = '';
                 mediaPreviewContainer.style.display = 'none';
+                cropContainer.classList.add('hidden');
             }, 300);
         });
     }
@@ -136,23 +135,76 @@ document.addEventListener('DOMContentLoaded', function() {
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
+                currentImageFile = file;
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    mediaPreviewContainer.innerHTML = '';
                     if (file.type.includes('image')) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        mediaPreviewContainer.appendChild(img);
+                        showImageCropper(e.target.result);
                     } else if (file.type.includes('video')) {
+                        mediaPreviewContainer.innerHTML = '';
                         const video = document.createElement('video');
                         video.src = e.target.result;
                         video.controls = true;
+                        video.style.maxWidth = '100%';
+                        video.style.maxHeight = '400px';
                         mediaPreviewContainer.appendChild(video);
+                        mediaPreviewContainer.style.display = 'flex';
                     }
-                    mediaPreviewContainer.style.display = 'flex';
                 };
                 reader.readAsDataURL(file);
             }
+        });
+    }
+    
+    // Image cropping functionality
+    function showImageCropper(imageSrc) {
+        mediaPreviewContainer.style.display = 'none';
+        cropContainer.classList.remove('hidden');
+        
+        const ctx = cropCanvas.getContext('2d');
+        const img = new Image();
+        img.onload = function() {
+            const maxWidth = 500;
+            const maxHeight = 400;
+            let { width, height } = img;
+            
+            if (width > maxWidth) {
+                height = (height * maxWidth) / width;
+                width = maxWidth;
+            }
+            if (height > maxHeight) {
+                width = (width * maxHeight) / height;
+                height = maxHeight;
+            }
+            
+            cropCanvas.width = width;
+            cropCanvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+        };
+        img.src = imageSrc;
+    }
+    
+    if (cropBtn) {
+        cropBtn.addEventListener('click', function() {
+            const croppedDataUrl = cropCanvas.toDataURL('image/jpeg', 0.8);
+            mediaPreviewContainer.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = croppedDataUrl;
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '400px';
+            img.style.objectFit = 'cover';
+            mediaPreviewContainer.appendChild(img);
+            
+            cropContainer.classList.add('hidden');
+            mediaPreviewContainer.style.display = 'flex';
+        });
+    }
+    
+    if (cancelCropBtn) {
+        cancelCropBtn.addEventListener('click', function() {
+            cropContainer.classList.add('hidden');
+            fileInput.value = '';
+            currentImageFile = null;
         });
     }
     
@@ -232,15 +284,15 @@ document.addEventListener('DOMContentLoaded', function() {
         postDiv.className = 'post-box';
         postDiv.innerHTML = `
             <div class="post-header">
-                <div class="post-avatar" style="background-image: url('${post.profile_picture || 'https://placehold.co/40x40/8897AA/FFFFFF?text=U'}')"></div>
+                <div class="post-avatar" style="background-image: url('${post.profile_picture || 'https://placehold.co/40x40/415A77/FFFFFF?text=' + (post.username ? post.username.charAt(0).toUpperCase() : 'U')}')"></div>
                 <div class="post-user-info">
                     <p class="post-username">${post.username}</p>
                     ${post.location ? `<p class="post-location">${post.location}</p>` : ''}
                 </div>
             </div>
             ${post.type === 'image' ? 
-                `<img src="${post.url}" alt="Post image">` : 
-                `<video controls><source src="${post.url}"></video>`
+                `<img src="${post.url}" alt="Post image" style="width: 100%; height: 400px; object-fit: cover;">` : 
+                `<video controls style="width: 100%; height: 400px; object-fit: cover;"><source src="${post.url}"></video>`
             }
             <div class="post-actions">
                 <button class="action-btn like-btn ${post.user_liked ? 'liked' : ''}" data-post-id="${post.id}">

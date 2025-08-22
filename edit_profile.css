@@ -1,12 +1,17 @@
 /* Color Palette from homestyle.css for consistency */
 :root {
   /* Default Light Mode Colors */
-  --lightest-bg: #EDECF2;
-  --sidebar-bg: rgba(216, 226, 235, 0.8); /* #D8E2EB */
-  --dusty-blue: #8897AA;
-  --light-lavender: #C8C7D7;
-  --dark-text: #5A6776;
-  --warm-cream-popup: #D6E4FF; /* Bluish tone to match theme */
+  --primary-dark: #0D1B2A;
+  --secondary-dark: #1B263B;
+  --accent-blue: #415A77;
+  --light-blue: #778DA9;
+  --light-gray: #E0E1DD;
+  --lightest-bg: #E0E1DD;
+  --sidebar-bg: rgba(27, 38, 59, 0.9);
+  --dusty-blue: #778DA9;
+  --light-lavender: #415A77;
+  --dark-text: #0D1B2A;
+  --warm-cream-popup: #E0E1DD;
 }
 
 /* Dark Mode Overrides for edit_profile.css */
@@ -41,7 +46,7 @@ html.dark-mode {
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    background-color: var(--lightest-bg);
+    background: linear-gradient(135deg, var(--light-gray) 0%, var(--dusty-blue) 100%);
     color: var(--dark-text);
     min-height: 100vh;
     display: flex;
@@ -176,8 +181,8 @@ input[type="file"] {
 }
 
 .upload-btn {
-    background-color: var(--dusty-blue);
-    color: var(--lightest-bg);
+    background-color: var(--accent-blue);
+    color: white;
     padding: 10px 20px;
     border-radius: 25px;
     cursor: pointer;
@@ -187,13 +192,13 @@ input[type="file"] {
 }
 
 .upload-btn:hover {
-    background-color: var(--light-lavender);
+    background-color: var(--light-blue);
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.2);
 }
 
 .save-changes-btn {
-    background-color: var(--dark-text);
+    background-color: var(--primary-dark);
     color: var(--warm-cream-popup);
     padding: 15px 30px;
     border: none;
@@ -207,7 +212,7 @@ input[type="file"] {
 }
 
 .save-changes-btn:hover {
-    background-color: #4A5766;
+    background-color: var(--secondary-dark);
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }

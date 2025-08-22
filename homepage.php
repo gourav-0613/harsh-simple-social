@@ -42,7 +42,6 @@ if (isset($_REQUEST['publish-btn']) && $_REQUEST['publish-btn'] == "true") {
       <button class="nav-btn" id="home-btn"><i class="fas fa-home"></i><span>Home</span></button>
       <button class="nav-btn" id="add-btn"><i class="fas fa-plus-circle"></i><span>Add</span></button>
       <button class="nav-btn" id="explore-btn"><i class="fas fa-compass"></i><span>Explore</span></button>
-      <button class="nav-btn" id="reels-btn"><i class="fas fa-video"></i><span>Reels</span></button>
       <button class="nav-btn" id="messages-btn"><i class="fas fa-paper-plane"></i><span>Messages</span></button>
     </div>
 
@@ -66,6 +65,13 @@ if (isset($_REQUEST['publish-btn']) && $_REQUEST['publish-btn'] == "true") {
         <h1>Create a New Post</h1>
 
         <div id="media-preview-container"></div>
+        <div id="crop-container" class="hidden">
+          <canvas id="crop-canvas"></canvas>
+          <div class="crop-controls">
+            <button type="button" id="crop-btn" class="top-btn">Crop Image</button>
+            <button type="button" id="cancel-crop-btn" class="top-btn">Cancel</button>
+          </div>
+        </div>
 
         <form action = "homepage.php" method = "post" enctype="multipart/form-data">
           <label for = "file-input" class = "file-input-label">Select Image or Video</label>

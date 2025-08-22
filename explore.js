@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const homeBtn = document.getElementById('home-btn');
     const profileBtn = document.getElementById('profile-btn');
     const addBtn = document.getElementById('add-btn');
-    const reelsBtn = document.getElementById('reels-btn');
     const messagesBtn = document.getElementById('messages-btn');
     const notificationsBtn = document.getElementById('notifications-btn');
     const logoutBtn = document.getElementById('logout-btn');
@@ -50,15 +49,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     if (reelsBtn) {
-        reelsBtn.addEventListener('click', function() {
-            addAnimation('blur-it');
-            setTimeout(() => {
-                window.location.href = 'reels.php';
-            }, 300);
-        });
-    }
-    
-    if (messagesBtn) {
         messagesBtn.addEventListener('click', function() {
             addAnimation('blur-it');
             setTimeout(() => {
@@ -202,18 +192,52 @@ document.addEventListener('DOMContentLoaded', function() {
         const userDiv = document.createElement('div');
         userDiv.className = 'user-result';
         userDiv.innerHTML = `
-            <div class="user-avatar" style="background-image: url('${user.profile_picture || 'https://placehold.co/60x60/8897AA/FFFFFF?text=U'}')"></div>
+            <div class="user-avatar" style="background-image: url('${user.profile_picture || 'https://placehold.co/60x60/415A77/FFFFFF?text=' + (user.username ? user.username.charAt(0).toUpperCase() : 'U')}')"></div>
             <div class="user-info">
                 <h3>${user.username}</h3>
                 <p>${user.firstName} ${user.lastName}</p>
                 <p>${user.followers_count} followers</p>
+                <button class="follow-request-btn" data-user-id="${user.id}">Send Request</button>
             </div>
         `;
+        
+        // Add follow request functionality
+        const followBtn = userDiv.querySelector('.follow-request-btn');
+        followBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sendFollowRequest(user.id, followBtn);
+        });
         
         userDiv.addEventListener('click', () => {
             window.location.href = `profile.php?user=${user.username}`;
         });
         
         return userDiv;
+    }
+    
+    // Send follow request function
+    function sendFollowRequest(userId, button) {
+        const formData = new FormData();
+        formData.append('action', 'send_request');
+        formData.append('user_id', userId);
+        
+        fetch('api/follow_requests.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                button.textContent = 'Requested';
+                button.disabled = true;
+                button.style.background = '#95a5a6';
+            } else {
+                alert('Error: ' + (data.error || 'Could not send request'));
+            }
+        })
+        .catch(error => {
+            console.error('Error sending follow request:', error);
+            alert('Error sending follow request');
+        });
     }
 });

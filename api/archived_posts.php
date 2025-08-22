@@ -13,17 +13,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     
     $user_id = $current_user['id'];
     
-    // Get popular posts from users that current user doesn't follow
-    $sql = "SELECT p.*, u.profile_picture, u.username as post_username, u.firstName, u.lastName,
+    // Get all archived posts by the current user
+    $sql = "SELECT p.*, u.profile_picture, u.username as post_username,
             (SELECT COUNT(*) FROM likes WHERE post_id = p.id) as likes_count,
             (SELECT COUNT(*) FROM comments WHERE post_id = p.id) as comments_count
             FROM posts p 
             JOIN users u ON p.user_id = u.id 
-            WHERE p.is_archived = 0 AND p.user_id NOT IN (
-                SELECT following_id FROM follows WHERE follower_id = $user_id
-            ) AND p.user_id != $user_id
-            ORDER BY likes_count DESC, p.created_at DESC 
-            LIMIT 30";
+            WHERE p.user_id = $user_id AND p.is_archived = 1
+            ORDER BY p.created_at DESC";
     
     $result = $conn->query($sql);
     $posts = [];

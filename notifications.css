@@ -1,4 +1,12 @@
 /* Notifications page specific styles */
+:root {
+  --primary-dark: #0D1B2A;
+  --secondary-dark: #1B263B;
+  --accent-blue: #415A77;
+  --light-blue: #778DA9;
+  --light-gray: #E0E1DD;
+}
+
 .notifications-header {
     display: flex;
     justify-content: space-between;
@@ -14,8 +22,8 @@
 }
 
 .mark-all-read-btn {
-    background-color: var(--dusty-blue);
-    color: var(--lightest-bg);
+    background-color: var(--accent-blue);
+    color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 20px;
@@ -25,7 +33,7 @@
 }
 
 .mark-all-read-btn:hover {
-    background-color: var(--light-lavender);
+    background-color: var(--light-blue);
 }
 
 .notifications-container {
@@ -47,14 +55,14 @@
 }
 
 .notification-item.unread {
-    background-color: rgba(136, 151, 170, 0.1);
+    background-color: rgba(65, 90, 119, 0.1);
 }
 
 .notification-avatar {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: var(--dusty-blue);
+    background-color: var(--accent-blue);
     background-size: cover;
     background-position: center;
     margin-right: 15px;
@@ -98,13 +106,56 @@
 }
 
 .notification-icon.comment {
-    background-color: var(--dusty-blue);
+    background-color: var(--accent-blue);
     color: white;
 }
 
 .notification-icon.follow {
-    background-color: var(--light-lavender);
+    background-color: var(--light-blue);
     color: white;
+}
+
+.notification-icon.follow_request {
+    background-color: #f39c12;
+    color: white;
+}
+
+.notification-icon.follow_accept {
+    background-color: #27ae60;
+    color: white;
+}
+
+.notification-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.accept-request-btn, .decline-request-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background-color 0.3s ease;
+}
+
+.accept-request-btn {
+    background: #27ae60;
+    color: white;
+}
+
+.accept-request-btn:hover {
+    background: #229954;
+}
+
+.decline-request-btn {
+    background: #e74c3c;
+    color: white;
+}
+
+.decline-request-btn:hover {
+    background: #c0392b;
 }
 
 .notification-icon.message {

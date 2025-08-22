@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const profileUsername = document.getElementById('profile-username');
     const profileFullname = document.getElementById('profile-fullname');
     const profileBio = document.getElementById('profile-bio');
+    const userPostsContainer = document.getElementById('user-posts-container');
+    const viewArchiveBtn = document.getElementById('view-archive-btn');
 
     const profileHomeBtn = document.getElementById('profile-home-btn');
     const profileSettingsBtn = document.getElementById('profile-settings-btn');
@@ -51,6 +53,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial UI update
     updateProfileUI();
+    
+    // Load user posts
+    loadUserPosts();
 
     // --- Dark Mode Initialization and Toggle ---
     if (localStorage.getItem('darkMode') === 'enabled') {
@@ -168,6 +173,216 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 window.location.href = 'edit_profile.php';
             }, 300);
+        });
+    }
+    
+    // --- View Archive Button ---
+    if (viewArchiveBtn) {
+        viewArchiveBtn.addEventListener('click', function() {
+            loadArchivedPosts();
+        });
+    }
+    
+    // Load user posts function
+    function loadUserPosts() {
+        fetch('api/user_posts.php')
+            .then(response => response.json())
+            .then(posts => {
+                if (posts.length === 0) {
+                    userPostsContainer.innerHTML = '<p class="no-posts-message">No posts yet. Go to home to create one!</p>';
+                    return;
+                }
+                
+                userPostsContainer.innerHTML = '';
+                posts.forEach(post => {
+                    const postElement = createPostElement(post);
+                    userPostsContainer.appendChild(postElement);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading user posts:', error);
+                userPostsContainer.innerHTML = '<p class="no-posts-message">Error loading posts. Please refresh the page.</p>';
+            });
+    }
+    
+    // Load archived posts function
+    function loadArchivedPosts() {
+        fetch('api/archived_posts.php')
+            .then(response => response.json())
+            .then(posts => {
+                if (posts.length === 0) {
+                    userPostsContainer.innerHTML = '<p class="no-posts-message">No archived posts.</p>';
+                    return;
+                }
+                
+                userPostsContainer.innerHTML = '<h3 style="grid-column: 1 / -1; text-align: center; color: var(--dark-text);">Archived Posts</h3>';
+                posts.forEach(post => {
+                    const postElement = createArchivedPostElement(post);
+                    userPostsContainer.appendChild(postElement);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading archived posts:', error);
+            });
+    }
+    
+    // Create post element for profile
+    function createPostElement(post) {
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post-grid-item';
+        postDiv.innerHTML = `
+            ${post.type === 'image' ? 
+                `<img src="${post.url}" alt="Post">` : 
+                `<video><source src="${post.url}"></video>`
+            }
+            <div class="post-overlay">
+                <div class="post-stats">
+                    <span><i class="fas fa-heart"></i> ${post.likes_count}</span>
+                    <span><i class="fas fa-comment"></i> ${post.comments_count}</span>
+                </div>
+                <div class="post-actions">
+                    <button class="post-action-btn archive-btn" data-post-id="${post.id}">
+                        <i class="fas fa-archive"></i> Archive
+                    </button>
+                    <button class="post-action-btn delete-btn" data-post-id="${post.id}">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Add event listeners
+        const archiveBtn = postDiv.querySelector('.archive-btn');
+        const deleteBtn = postDiv.querySelector('.delete-btn');
+        
+        archiveBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            archivePost(post.id);
+        });
+        
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+                deletePost(post.id);
+            }
+        });
+        
+        return postDiv;
+    }
+    
+    // Create archived post element
+    function createArchivedPostElement(post) {
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post-grid-item';
+        postDiv.innerHTML = `
+            ${post.type === 'image' ? 
+                `<img src="${post.url}" alt="Post">` : 
+                `<video><source src="${post.url}"></video>`
+            }
+            <div class="post-overlay">
+                <div class="post-stats">
+                    <span><i class="fas fa-heart"></i> ${post.likes_count}</span>
+                    <span><i class="fas fa-comment"></i> ${post.comments_count}</span>
+                </div>
+                <div class="post-actions">
+                    <button class="post-action-btn unarchive-btn" data-post-id="${post.id}">
+                        <i class="fas fa-undo"></i> Unarchive
+                    </button>
+                    <button class="post-action-btn delete-btn" data-post-id="${post.id}">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Add event listeners
+        const unarchiveBtn = postDiv.querySelector('.unarchive-btn');
+        const deleteBtn = postDiv.querySelector('.delete-btn');
+        
+        unarchiveBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            unarchivePost(post.id);
+        });
+        
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+                deletePost(post.id);
+            }
+        });
+        
+        return postDiv;
+    }
+    
+    // Archive post function
+    function archivePost(postId) {
+        const formData = new FormData();
+        formData.append('action', 'archive');
+        formData.append('post_id', postId);
+        
+        fetch('api/user_posts.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loadUserPosts(); // Reload posts
+            } else {
+                alert('Error archiving post: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error archiving post:', error);
+            alert('Error archiving post');
+        });
+    }
+    
+    // Unarchive post function
+    function unarchivePost(postId) {
+        const formData = new FormData();
+        formData.append('action', 'unarchive');
+        formData.append('post_id', postId);
+        
+        fetch('api/user_posts.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loadArchivedPosts(); // Reload archived posts
+            } else {
+                alert('Error unarchiving post: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error unarchiving post:', error);
+            alert('Error unarchiving post');
+        });
+    }
+    
+    // Delete post function
+    function deletePost(postId) {
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('post_id', postId);
+        
+        fetch('api/user_posts.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loadUserPosts(); // Reload posts
+            } else {
+                alert('Error deleting post: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting post:', error);
+            alert('Error deleting post');
         });
     }
 

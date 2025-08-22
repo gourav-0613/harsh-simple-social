@@ -18,6 +18,59 @@ document.addEventListener("DOMContentLoaded", function () {
     signUpForm.classList.add('hidden');
   });
 
+  // Add login animation
+  const loginForm = document.querySelector('form[action="register.php"]');
+  if (loginForm) {
+    loginForm.addEventListener('submit', function(e) {
+      const formData = new FormData(loginForm);
+      if (formData.get('signIn')) {
+        // Add loading animation
+        document.body.style.transition = 'opacity 0.5s ease';
+        document.body.style.opacity = '0.7';
+        
+        // Create loading overlay
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, #0D1B2A 0%, #415A77 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+          opacity: 0;
+          transition: opacity 0.5s ease;
+        `;
+        
+        overlay.innerHTML = `
+          <div style="text-align: center; color: white;">
+            <div style="width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+            <p style="font-size: 1.2rem; margin: 0;">Logging you in...</p>
+          </div>
+        `;
+        
+        document.body.appendChild(overlay);
+        
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `;
+        document.head.appendChild(style);
+        
+        setTimeout(() => {
+          overlay.style.opacity = '1';
+        }, 100);
+      }
+    });
+  }
+
   /* help model java script by Gourav */
 
   const helpBtn = document.getElementById("helpBtn");

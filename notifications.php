@@ -25,7 +25,6 @@ $current_user = getCurrentUser();
       <button class="nav-btn" id="home-btn"><i class="fas fa-home"></i><span>Home</span></button>
       <button class="nav-btn" id="add-btn"><i class="fas fa-plus-circle"></i><span>Add</span></button>
       <button class="nav-btn" id="explore-btn"><i class="fas fa-compass"></i><span>Explore</span></button>
-      <button class="nav-btn" id="reels-btn"><i class="fas fa-video"></i><span>Reels</span></button>
       <button class="nav-btn" id="messages-btn"><i class="fas fa-paper-plane"></i><span>Messages</span></button>
     </div>
 

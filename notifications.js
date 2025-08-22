@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const profileBtn = document.getElementById('profile-btn');
     const addBtn = document.getElementById('add-btn');
     const exploreBtn = document.getElementById('explore-btn');
-    const reelsBtn = document.getElementById('reels-btn');
     const messagesBtn = document.getElementById('messages-btn');
     const logoutBtn = document.getElementById('logout-btn');
     const logoutConfirmBtn = document.getElementById('logout-confirm-btn');
@@ -59,15 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     if (reelsBtn) {
-        reelsBtn.addEventListener('click', function() {
-            addAnimation('blur-it');
-            setTimeout(() => {
-                window.location.href = 'reels.php';
-            }, 300);
-        });
-    }
-    
-    if (messagesBtn) {
         messagesBtn.addEventListener('click', function() {
             addAnimation('blur-it');
             setTimeout(() => {
@@ -145,19 +135,46 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const iconClass = getNotificationIcon(notification.type);
         
+        let actionButtons = '';
+        if (notification.type === 'follow_request') {
+            actionButtons = `
+                <div class="notification-actions">
+                    <button class="accept-request-btn" data-requester-id="${notification.from_user_id}">Accept</button>
+                    <button class="decline-request-btn" data-requester-id="${notification.from_user_id}">Decline</button>
+                </div>
+            `;
+        }
+        
         notificationDiv.innerHTML = `
-            <div class="notification-avatar" style="background-image: url('https://placehold.co/50x50/8897AA/FFFFFF?text=${notification.from_username.charAt(0).toUpperCase()}')"></div>
+            <div class="notification-avatar" style="background-image: url('https://placehold.co/50x50/415A77/FFFFFF?text=${notification.from_username.charAt(0).toUpperCase()}')"></div>
             <div class="notification-content">
                 <p class="notification-text">
                     <span class="username">${notification.from_username}</span>
                     ${getNotificationMessage(notification)}
                 </p>
                 <p class="notification-time">${formatTime(notification.created_at)}</p>
+                ${actionButtons}
             </div>
             <div class="notification-icon ${notification.type}">
                 <i class="${iconClass}"></i>
             </div>
         `;
+        
+        // Add event listeners for follow request actions
+        if (notification.type === 'follow_request') {
+            const acceptBtn = notificationDiv.querySelector('.accept-request-btn');
+            const declineBtn = notificationDiv.querySelector('.decline-request-btn');
+            
+            acceptBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                handleFollowRequest('accept', notification.from_user_id, notificationDiv);
+            });
+            
+            declineBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                handleFollowRequest('decline', notification.from_user_id, notificationDiv);
+            });
+        }
         
         // Add click event to mark as read and navigate if needed
         notificationDiv.addEventListener('click', () => {
@@ -174,6 +191,35 @@ document.addEventListener('DOMContentLoaded', function() {
         return notificationDiv;
     }
     
+    // Handle follow request actions
+    function handleFollowRequest(action, requesterId, notificationElement) {
+        const formData = new FormData();
+        formData.append('action', action + '_request');
+        formData.append('requester_id', requesterId);
+        
+        fetch('api/follow_requests.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove the notification element or update it
+                notificationElement.style.opacity = '0.5';
+                const actions = notificationElement.querySelector('.notification-actions');
+                if (actions) {
+                    actions.innerHTML = `<span style="color: var(--dusty-blue); font-size: 0.9rem;">${action === 'accept' ? 'Accepted' : 'Declined'}</span>`;
+                }
+            } else {
+                alert('Error: ' + (data.error || 'Could not process request'));
+            }
+        })
+        .catch(error => {
+            console.error('Error handling follow request:', error);
+            alert('Error processing request');
+        });
+    }
+    
     // Get notification icon based on type
     function getNotificationIcon(type) {
         switch (type) {
@@ -183,6 +229,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 return 'fas fa-comment';
             case 'follow':
                 return 'fas fa-user-plus';
+            case 'follow_request':
+                return 'fas fa-user-clock';
+            case 'follow_accept':
+                return 'fas fa-user-check';
             case 'message':
                 return 'fas fa-envelope';
             default:
@@ -199,6 +249,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 return 'commented on your post';
             case 'follow':
                 return 'started following you';
+            case 'follow_request':
+                return 'sent you a follow request';
+            case 'follow_accept':
+                return 'accepted your follow request';
             case 'message':
                 return 'sent you a message';
             default:

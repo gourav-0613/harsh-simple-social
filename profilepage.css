@@ -1,13 +1,18 @@
 /* Color Palette from homestyle.css for consistency */
 :root {
   /* Default Light Mode Colors */
-  --lightest-bg: #EDECF2;
-  --sidebar-bg: rgba(216, 226, 235, 0.8); /* #D8E2EB */
-  --dusty-blue: #8897AA;
-  --light-lavender: #C8C7D7;
-  --dark-text: #5A6776;
-  --warm-cream-popup: #D6E4FF; /* Bluish tone to match theme */
-  --post-bg: #333; /* Dark background for posts */
+  --primary-dark: #0D1B2A;
+  --secondary-dark: #1B263B;
+  --accent-blue: #415A77;
+  --light-blue: #778DA9;
+  --light-gray: #E0E1DD;
+  --lightest-bg: #E0E1DD;
+  --sidebar-bg: rgba(27, 38, 59, 0.9);
+  --dusty-blue: #778DA9;
+  --light-lavender: #415A77;
+  --dark-text: #0D1B2A;
+  --warm-cream-popup: #E0E1DD;
+  --post-bg: rgba(224, 225, 221, 0.9);
 }
 
 /* Dark Mode Overrides for profilepage.css */
@@ -42,7 +47,7 @@ html.dark-mode {
 body {
   margin: 0;
   font-family: 'Playfair Display', serif;
-  background: url('images/bg6.jpg') no-repeat center center/cover;
+  background: linear-gradient(135deg, var(--light-gray) 0%, var(--dusty-blue) 100%);
   color: var(--dark-text); /* Apply dark-text to body for default text */
   min-height: 100vh;
   overflow-x: hidden;
@@ -62,7 +67,7 @@ body {
 }
 
 .icon {
-  background-color: var(--sidebar-bg);
+  background-color: var(--accent-blue);
   color: var(--dark-text);
   padding: 18px;
   border-radius: 50%;
@@ -78,7 +83,7 @@ body {
 }
 
 .icon:hover {
-  background-color: var(--light-lavender);
+  background-color: var(--light-blue);
   transform: scale(1.05);
 }
 
@@ -100,7 +105,7 @@ body {
   display: flex;
   align-items: center;
   gap: 40px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--post-bg);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 30px;
@@ -111,7 +116,7 @@ body {
 .profile-pic {
   width: 180px;
   height: 180px;
-  background-color: var(--dusty-blue);
+  background-color: var(--accent-blue);
   border-radius: 50%;
   background-size: cover;
   background-position: center;
@@ -164,8 +169,8 @@ body {
 }
 
 .buttons button {
-  background-color: var(--dusty-blue);
-  color: var(--lightest-bg);
+  background-color: var(--accent-blue);
+  color: white;
   border: none;
   padding: 12px 25px;
   border-radius: 25px;
@@ -178,13 +183,13 @@ body {
 }
 
 .buttons button:hover {
-  background-color: var(--light-lavender);
+  background-color: var(--light-blue);
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0,0,0,0.2);
 }
 
 .center-icon {
-  background-color: var(--sidebar-bg);
+  background-color: var(--accent-blue);
   color: var(--dark-text);
   border-radius: 50%;
   width: 60px;
@@ -214,6 +219,7 @@ body {
   overflow: hidden;
   background-color: var(--post-bg); /* Use post-bg variable */
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
@@ -224,6 +230,68 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.post-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(13, 27, 42, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: white;
+}
+
+.post-grid-item:hover .post-overlay {
+  opacity: 1;
+}
+
+.post-stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.post-stats span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.post-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.post-action-btn {
+  background: var(--accent-blue);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.post-action-btn:hover {
+  background: var(--light-blue);
+  transform: translateY(-2px);
+}
+
+.delete-btn {
+  background: #e74c3c !important;
+}
+
+.delete-btn:hover {
+  background: #c0392b !important;
 }
 
 .no-posts-message {
@@ -298,12 +366,12 @@ body {
 }
 
 .popup-btn.confirm {
-  background-color: var(--dusty-blue);
+  background-color: var(--accent-blue);
   color: var(--warm-cream-popup);
 }
 
 .popup-btn.cancel {
-  background-color: var(--sidebar-bg);
+  background-color: var(--light-blue);
   color: var(--dark-text);
 }
 

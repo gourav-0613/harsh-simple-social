@@ -136,7 +136,7 @@
                 location VARCHAR(100),
                 likes_count INT DEFAULT 0,
                 comments_count INT DEFAULT 0,
-                is_archived BOOLEAN DEFAULT FALSE,
+                is_archived BOOLEAN DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -154,6 +154,18 @@
                 UNIQUE KEY unique_follow (follower_id, following_id),
                 INDEX idx_follower (follower_id),
                 INDEX idx_following (following_id)
+            )",
+            
+            'follow_requests' => "CREATE TABLE IF NOT EXISTS follow_requests (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                requester_id INT NOT NULL,
+                requested_id INT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (requester_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (requested_id) REFERENCES users(id) ON DELETE CASCADE,
+                UNIQUE KEY unique_request (requester_id, requested_id),
+                INDEX idx_requester (requester_id),
+                INDEX idx_requested (requested_id)
             )",
             
             'likes' => "CREATE TABLE IF NOT EXISTS likes (
@@ -246,12 +258,12 @@
             'notifications' => "CREATE TABLE IF NOT EXISTS notifications (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 user_id INT NOT NULL,
-                type ENUM('like', 'comment', 'follow', 'message', 'mention', 'story_view') NOT NULL,
+                type ENUM('like', 'comment', 'follow', 'follow_request', 'follow_accept', 'message', 'mention', 'story_view') NOT NULL,
                 from_user_id INT NOT NULL,
                 from_username VARCHAR(50) NOT NULL,
                 post_id INT NULL,
                 message TEXT NOT NULL,
-                is_read BOOLEAN DEFAULT FALSE,
+                is_read BOOLEAN DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
                 FOREIGN KEY (from_user_id) REFERENCES users(id) ON DELETE CASCADE,

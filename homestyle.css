@@ -2,15 +2,20 @@
 /* Dark Mode Color Palette (from user's image) */
 :root {
   /* Default Light Mode Colors */
-  --lightest-bg: #EDECF2;
-  --sidebar-bg: rgba(216, 226, 235, 0.8);
-  --dusty-blue: #8897AA;
-  --light-lavender: #C8C7D7;
-  --dark-text: #5A6776;
-  --warm-cream-popup: #D6E4FF; /* Bluish tone to match theme */
-  --post-bg: rgba(255, 255, 255, 0.7);
-  --post-border: #D1E8EE;
-  --input-bg: #EDECF2; /* For inputs like textarea in create post */
+  --primary-dark: #0D1B2A;
+  --secondary-dark: #1B263B;
+  --accent-blue: #415A77;
+  --light-blue: #778DA9;
+  --light-gray: #E0E1DD;
+  --lightest-bg: #E0E1DD;
+  --sidebar-bg: rgba(27, 38, 59, 0.9);
+  --dusty-blue: #778DA9;
+  --light-lavender: #415A77;
+  --dark-text: #0D1B2A;
+  --warm-cream-popup: #E0E1DD;
+  --post-bg: rgba(224, 225, 221, 0.9);
+  --post-border: #778DA9;
+  --input-bg: #E0E1DD;
 }
 
 /* Dark Mode Overrides for homestyle.css */
@@ -41,7 +46,7 @@ html, body {
 }
 
 body {
-  background-color: var(--lightest-bg);
+  background: linear-gradient(135deg, var(--light-gray) 0%, var(--dusty-blue) 100%);
   color: var(--dark-text); /* Apply dark-text to body for default text */
   transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for theme change */
 }
@@ -69,8 +74,8 @@ body {
 }
 
 .nav-btn {
-  background-color: var(--dusty-blue);
-  color: var(--lightest-bg);
+  background-color: var(--accent-blue);
+  color: white;
   border: none;
   border-radius: 50%;
   width: 50px;
@@ -92,7 +97,7 @@ body {
 }
 
 .nav-btn:hover {
-  background-color: var(--light-lavender);
+  background-color: var(--light-blue);
   transform: scale(1.05);
 }
 
@@ -119,8 +124,8 @@ body {
 }
 
 .top-btn {
-  background-color: var(--dusty-blue);
-  color: var(--lightest-bg);
+  background-color: var(--accent-blue);
+  color: white;
   border: none;
   border-radius: 25px;
   padding: 10px 20px;
@@ -130,10 +135,28 @@ body {
 }
 
 .top-btn:hover {
-  background-color: var(--light-lavender);
+  background-color: var(--light-blue);
 }
 
 .hidden { display: none !important; }
+
+#crop-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+#crop-canvas {
+  border: 2px solid var(--accent-blue);
+  border-radius: 8px;
+  max-width: 100%;
+}
+
+.crop-controls {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
 
 /* Stories Section */
 .stories-container {
@@ -157,7 +180,7 @@ body {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  background: linear-gradient(45deg, var(--accent-blue) 0%, var(--light-blue) 50%, var(--dusty-blue) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,7 +192,7 @@ body {
 }
 
 .add-story .story-avatar {
-  background: var(--dusty-blue);
+  background: var(--accent-blue);
 }
 
 .story-item span {
@@ -195,9 +218,11 @@ body {
   background-color: var(--post-bg);
   border: 1px solid var(--post-border);
   border-radius: 30px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 16px rgba(13, 27, 42, 0.15);
   color: var(--dark-text);
   overflow: hidden;
+  max-width: 600px;
+  width: 100%;
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
@@ -212,7 +237,7 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: var(--dusty-blue);
+  background-color: var(--accent-blue);
   background-size: cover;
   background-position: center;
 }
@@ -235,7 +260,8 @@ body {
 
 .post-box img, .post-box video {
   width: 100%;
-  height: auto;
+  height: 400px;
+  object-fit: cover;
   display: block;
 }
 
@@ -405,8 +431,8 @@ body {
 
 /* This makes the file input look like a nice button */
 .file-input-label {
-    background-color: var(--dusty-blue);
-    color: var(--lightest-bg);
+    background-color: var(--accent-blue);
+    color: white;
     padding: 10px 20px;
     border-radius: 25px;
     cursor: pointer;
@@ -416,7 +442,7 @@ body {
 }
 
 .file-input-label:hover {
-    background-color: var(--light-lavender);
+    background-color: var(--light-blue);
 }
 
 #file-input {
@@ -491,12 +517,12 @@ body {
 }
 
 .popup-btn.confirm {
-  background-color: var(--dusty-blue);
+  background-color: var(--accent-blue);
   color: var(--warm-cream-popup);
 }
 
 .popup-btn.cancel {
-  background-color: var(--sidebar-bg);
+  background-color: var(--light-blue);
   color: var(--dark-text);
 }
 

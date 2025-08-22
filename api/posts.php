@@ -14,13 +14,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $user_id = $current_user['id'];
     
     // Get posts from users that current user follows + own posts
-    $sql = "SELECT p.*, u.profile_picture, u.username as post_username,
+    $sql = "SELECT p.*, u.profile_picture, u.username as post_username, u.firstName, u.lastName,
             (SELECT COUNT(*) FROM likes WHERE post_id = p.id) as likes_count,
             (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND user_id = $user_id) as user_liked,
             (SELECT COUNT(*) FROM comments WHERE post_id = p.id) as comments_count
             FROM posts p 
             JOIN users u ON p.user_id = u.id 
-            WHERE p.user_id IN (
+            WHERE p.is_archived = 0 AND p.user_id IN (
                 SELECT following_id FROM follows WHERE follower_id = $user_id
                 UNION 
                 SELECT $user_id
