@@ -1,11 +1,10 @@
 <?php
+// Include database configuration
+require_once 'database_config.php';
 
-$host="localhost";
-$user="root";
-$pass="";
-$db="login";
-$conn=new mysqli($host,$user,$pass,$db);
-if($conn->connect_error){
-    echo "Failed to connect DB".$conn->connect_error;
-}
+// Create connection using the configuration
+$conn = createConnection();
+
+// Set charset to utf8
+$conn->set_charset("utf8");
 ?>
