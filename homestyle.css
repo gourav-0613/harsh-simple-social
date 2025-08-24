@@ -71,7 +71,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 25px;
   padding-top: 40px;
   transition: all 0.3s ease;
   border-right: 1px solid rgba(198, 172, 143, 0.2);
@@ -82,8 +82,8 @@ body {
   color: var(--primary-light);
   border: none;
   border-radius: 15px;
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   font-size: 1rem;
   cursor: pointer;
   position: relative;
@@ -94,10 +94,10 @@ body {
 
 .nav-btn span {
   position: absolute;
-  bottom: -18px;
+  bottom: -22px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   color: var(--dark-text);
   transition: all 0.3s ease;
   font-weight: 500;
@@ -168,6 +168,11 @@ body {
   margin-top: 80px;
   max-height: calc(100vh - 200px);
   overflow-y: auto;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid var(--post-border);
 }
 
 .recent-forwards h3 {
@@ -179,9 +184,11 @@ body {
   font-family: 'Inter', sans-serif;
   position: sticky;
   top: 0;
-  background: var(--primary-light);
+  background: var(--post-bg);
+  backdrop-filter: blur(10px);
   padding: 10px 0;
   z-index: 10;
+  border-radius: 10px;
 }
 
 .forward-item {
@@ -363,10 +370,12 @@ body {
   background-position: center;
   border: 2px solid var(--primary-light);
   box-shadow: 0 4px 15px rgba(198, 172, 143, 0.3);
+  flex-shrink: 0;
 }
 
 .post-user-info {
   flex-grow: 1;
+  min-width: 0;
 }
 
 .post-username {
@@ -374,6 +383,9 @@ body {
   color: var(--primary-dark);
   margin: 0;
   font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .post-location {

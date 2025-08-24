@@ -61,7 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Update user's post count
         $conn->query("UPDATE users SET posts_count = posts_count - 1 WHERE id = $user_id");
         
-        echo json_encode(['success' => true]);
+        // Update posts count in response for real-time update
+        $count_result = $conn->query("SELECT posts_count FROM users WHERE id = $user_id");
+        $count_data = $count_result->fetch_assoc();
+        
+        echo json_encode(['success' => true, 'posts_count' => $count_data['posts_count']]);
     }
     
     if ($action === 'archive') {

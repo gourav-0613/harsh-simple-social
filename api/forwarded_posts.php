@@ -50,14 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $check = $conn->query("SELECT id FROM forwarded_posts WHERE user_id = $user_id AND post_id = $post_id");
         
         if ($check->num_rows > 0) {
-            echo json_encode(['error' => 'Already forwarded']);
-            exit;
+            // Remove forward (unforward)
+            $conn->query("DELETE FROM forwarded_posts WHERE user_id = $user_id AND post_id = $post_id");
+            echo json_encode(['success' => true, 'action' => 'unforwarded']);
+        } else {
+            // Forward the post
+            $conn->query("INSERT INTO forwarded_posts (user_id, post_id) VALUES ($user_id, $post_id)");
+            echo json_encode(['success' => true, 'action' => 'forwarded']);
         }
-        
-        // Forward the post
-        $conn->query("INSERT INTO forwarded_posts (user_id, post_id) VALUES ($user_id, $post_id)");
-        
-        echo json_encode(['success' => true]);
     }
 }
 ?>

@@ -19,6 +19,8 @@ if(isset($_POST['signUp'])){
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof showErrorPopup === 'function') {
                 showErrorPopup('Registration Failed', 'Email or Username already exists!');
+            } else {
+                alert('Email or Username already exists!');
             }
         });
         </script>";
@@ -37,6 +39,7 @@ if(isset($_POST['signUp'])){
                             window.location.href = 'index.php';
                         }, 2000);
                     } else {
+                        alert('Account created successfully!');
                         window.location.href = 'index.php';
                     }
                 });
@@ -47,6 +50,8 @@ if(isset($_POST['signUp'])){
                 document.addEventListener('DOMContentLoaded', function() {
                     if (typeof showErrorPopup === 'function') {
                         showErrorPopup('Registration Error', 'There was an error creating your account. Please try again.');
+                    } else {
+                        alert('There was an error creating your account. Please try again.');
                     }
                 });
                 </script>";
@@ -77,6 +82,7 @@ if(isset($_POST['signIn'])){
                 window.location.href = 'homepage.php';
             }, 1500);
         } else {
+            alert('Login successful!');
             window.location.href = 'homepage.php';
         }
     });
@@ -87,6 +93,8 @@ if(isset($_POST['signIn'])){
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof showErrorPopup === 'function') {
             showErrorPopup('Login Failed', 'Incorrect email/username or password.');
+        } else {
+            alert('Incorrect email/username or password.');
         }
     });
     </script>";

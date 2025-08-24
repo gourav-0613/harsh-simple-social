@@ -65,13 +65,7 @@ if (isset($_REQUEST['publish-btn']) && $_REQUEST['publish-btn'] == "true") {
         <h1>Create a New Post</h1>
 
         <div id="media-preview-container"></div>
-        <div id="crop-container" class="hidden">
-          <canvas id="crop-canvas"></canvas>
-          <div class="crop-controls">
-            <button type="button" id="crop-btn" class="top-btn">Crop Image</button>
-            <button type="button" id="cancel-crop-btn" class="top-btn">Cancel</button>
-          </div>
-        </div>
+        <div id="crop-container" class="hidden"></div>
 
         <form action = "homepage.php" method = "post" enctype="multipart/form-data">
           <label for = "file-input" class = "file-input-label">Select Image or Video</label>
@@ -137,9 +131,21 @@ if (isset($_REQUEST['publish-btn']) && $_REQUEST['publish-btn'] == "true") {
 
   <script src="home.js"></script>
   <script src="enhanced_home.js"></script>
+  <script src="dynamic_crop.js"></script>
   <script src="dark-mode.js"></script>
   <script src="nexus-popups.js"></script>
+  
   <?php
+    // Show success message if post was created
+    if (isset($_REQUEST['publish-btn']) && $_REQUEST['publish-btn'] == "true") {
+        echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof showSuccessPopup === 'function') {
+                showSuccessPopup('Post Published!', 'Your post has been successfully published.');
+            }
+        });
+        </script>";
+    }
     // Posts are now loaded via JavaScript API calls
   ?>
 </body>

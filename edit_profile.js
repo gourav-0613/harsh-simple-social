@@ -81,14 +81,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         window.location.href = 'profilepage.php';
                     }, 2000);
                 } else {
-                    alert("Profile updated successfully!");
+                    if (typeof showSuccessPopup === 'function') {
+                        showSuccessPopup('Profile Updated!', 'Your profile has been updated successfully.');
+                    }
                     window.location.href = 'profilepage.php';
                 }
             } else {
                 if (typeof showErrorPopup === 'function') {
                     showErrorPopup('Update Failed', data.error || 'Could not update profile');
                 } else {
-                    alert("Error: " + (data.error || 'Could not update profile'));
+                    if (typeof showErrorPopup === 'function') {
+                        showErrorPopup('Error', data.error || 'Could not update profile');
+                    }
                 }
             }
         })
@@ -100,7 +104,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (typeof showErrorPopup === 'function') {
                 showErrorPopup('Error', 'An error occurred while updating your profile');
             } else {
-                alert("An error occurred while updating your profile");
+                if (typeof showErrorPopup === 'function') {
+                    showErrorPopup('Error', 'An error occurred while updating your profile');
+                }
             }
         });
     });

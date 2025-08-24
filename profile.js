@@ -307,9 +307,14 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                if (typeof showSuccessPopup === 'function') {
+                    showSuccessPopup('Post Archived', 'Post has been successfully archived');
+                }
                 loadUserPosts();
             } else {
-                alert('Error archiving post: ' + (data.error || 'Unknown error'));
+                if (typeof showErrorPopup === 'function') {
+                    showErrorPopup('Archive Failed', data.error || 'Could not archive post');
+                }
             }
         })
         .catch(error => console.error('Error archiving post:', error));
@@ -324,29 +329,48 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                if (typeof showSuccessPopup === 'function') {
+                    showSuccessPopup('Post Unarchived', 'Post has been successfully unarchived');
+                }
                 loadArchivedPosts();
             } else {
-                alert('Error unarchiving post: ' + (data.error || 'Unknown error'));
+                if (typeof showErrorPopup === 'function') {
+                    showErrorPopup('Unarchive Failed', data.error || 'Could not unarchive post');
+                }
             }
         })
         .catch(error => console.error('Error unarchiving post:', error));
     }
     
     function deletePost(postId) {
-        const formData = new FormData();
-        formData.append('action', 'delete');
-        formData.append('post_id', postId);
-        
-        fetch('api/user_posts.php', { method: 'POST', body: formData })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                loadUserPosts();
-            } else {
-                alert('Error deleting post: ' + (data.error || 'Unknown error'));
-            }
-        })
-        .catch(error => console.error('Error deleting post:', error));
+        if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+            const formData = new FormData();
+            formData.append('action', 'delete');
+            formData.append('post_id', postId);
+            
+            fetch('api/user_posts.php', { method: 'POST', body: formData })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (typeof showSuccessPopup === 'function') {
+                        showSuccessPopup('Post Deleted', 'Post has been successfully deleted');
+                    }
+                    // Update posts count if provided
+                    if (data.posts_count !== undefined) {
+                        const postsCountElement = document.getElementById('posts-count');
+                        if (postsCountElement) {
+                            postsCountElement.textContent = data.posts_count;
+                        }
+                    }
+                    loadUserPosts();
+                } else {
+                    if (typeof showErrorPopup === 'function') {
+                        showErrorPopup('Delete Failed', data.error || 'Could not delete post');
+                    }
+                }
+            })
+            .catch(error => console.error('Error deleting post:', error));
+        }
     }
 
     // --- Close popups when clicking outside ---

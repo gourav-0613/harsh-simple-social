@@ -52,41 +52,23 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     
     // Show redirect popup if not from search engine
-    if (!isFromSearchEngine && !sessionStorage.getItem('nexus_visited')) {
+    if (!isFromSearchEngine && !sessionStorage.getItem('nexus_visited') && !localStorage.getItem('nexus_no_redirect')) {
       showRedirectPopup();
       sessionStorage.setItem('nexus_visited', 'true');
     }
   }
   
   function showRedirectPopup() {
-    // Create redirect popup
-    const redirectOverlay = document.createElement('div');
-    redirectOverlay.className = 'redirect-popup-overlay';
-    redirectOverlay.innerHTML = `
-      <div class="redirect-popup">
-        <h2>Welcome to Nexus</h2>
-        <p>Preparing your social experience...</p>
-        <div class="redirect-loading-spinner"></div>
-        <div class="redirect-progress">
-          <div class="redirect-progress-bar"></div>
-        </div>
-      </div>
-    `;
-    
-    document.body.appendChild(redirectOverlay);
-    
-    // Show popup
-    setTimeout(() => {
-      redirectOverlay.classList.add('show');
-    }, 100);
-    
-    // Auto redirect after 3 seconds
-    setTimeout(() => {
-      redirectOverlay.classList.remove('show');
+    if (typeof showLoadingPopup === 'function') {
+      showLoadingPopup('Welcome to Nexus', 'Preparing your social experience...');
+      
+      // Auto hide after 3 seconds
       setTimeout(() => {
-        document.body.removeChild(redirectOverlay);
-      }, 500);
-    }, 3500);
+        if (typeof hidePopup === 'function') {
+          hidePopup();
+        }
+      }, 3000);
+    }
   }
 
   /* help model java script by Gourav */

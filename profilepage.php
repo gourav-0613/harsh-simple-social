@@ -38,6 +38,7 @@ $current_user = array_merge([
       <div class="profile-info">
         <h1 class="username" id="profile-username"><?php echo htmlspecialchars($current_user['username']); ?></h1>
         <div class="stats">
+          <div class="posts-stat"><strong id="posts-count"><?php echo htmlspecialchars($current_user['posts_count'] ?? 0); ?></strong><br>posts</div>
           <div><strong><?php echo htmlspecialchars($current_user['followers_count']); ?></strong><br>followers</div>
           <div><strong><?php echo htmlspecialchars($current_user['following_count']); ?></strong><br>following</div>
         </div>

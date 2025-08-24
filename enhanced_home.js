@@ -138,11 +138,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const file = e.target.files[0];
             if (file) {
                 currentImageFile = file;
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    if (file.type.includes('image')) {
-                        showImageCropper(e.target.result);
-                    } else if (file.type.includes('video')) {
+                
+                if (file.type.includes('image')) {
+                    showDynamicImageCropper(file);
+                } else if (file.type.includes('video')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
                         mediaPreviewContainer.innerHTML = '';
                         const video = document.createElement('video');
                         video.src = e.target.result;
@@ -151,62 +152,51 @@ document.addEventListener('DOMContentLoaded', function() {
                         video.style.maxHeight = '400px';
                         mediaPreviewContainer.appendChild(video);
                         mediaPreviewContainer.style.display = 'flex';
-                    }
-                };
-                reader.readAsDataURL(file);
+                    };
+                    reader.readAsDataURL(file);
+                }
             }
         });
     }
     
-    // Image cropping functionality
-    function showImageCropper(imageSrc) {
+    // Dynamic image cropping functionality
+    function showDynamicImageCropper(file) {
         mediaPreviewContainer.style.display = 'none';
+        cropContainer.innerHTML = '';
         cropContainer.classList.remove('hidden');
         
-        const ctx = cropCanvas.getContext('2d');
-        const img = new Image();
-        img.onload = function() {
-            const maxWidth = 500;
-            const maxHeight = 400;
-            let { width, height } = img;
-            
-            if (width > maxWidth) {
-                height = (height * maxWidth) / width;
-                width = maxWidth;
-            }
-            if (height > maxHeight) {
-                width = (width * maxHeight) / height;
-                height = maxHeight;
-            }
-            
-            cropCanvas.width = width;
-            cropCanvas.height = height;
-            ctx.drawImage(img, 0, 0, width, height);
-        };
-        img.src = imageSrc;
-    }
-    
-    if (cropBtn) {
-        cropBtn.addEventListener('click', function() {
-            const croppedDataUrl = cropCanvas.toDataURL('image/jpeg', 0.8);
-            mediaPreviewContainer.innerHTML = '';
-            const img = document.createElement('img');
-            img.src = croppedDataUrl;
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '400px';
-            img.style.objectFit = 'cover';
-            mediaPreviewContainer.appendChild(img);
-            
-            cropContainer.classList.add('hidden');
-            mediaPreviewContainer.style.display = 'flex';
+        const cropper = new DynamicImageCropper(cropContainer, {
+            aspectRatio: 1,
+            quality: 0.8,
+            maxWidth: 600,
+            maxHeight: 400
         });
-    }
-    
-    if (cancelCropBtn) {
-        cancelCropBtn.addEventListener('click', function() {
-            cropContainer.classList.add('hidden');
-            fileInput.value = '';
-            currentImageFile = null;
+        
+        cropper.loadImage(file).then(() => {
+            cropper.onCrop((croppedDataUrl) => {
+                mediaPreviewContainer.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = croppedDataUrl;
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '400px';
+                img.style.objectFit = 'cover';
+                img.style.borderRadius = '15px';
+                mediaPreviewContainer.appendChild(img);
+                
+                cropContainer.classList.add('hidden');
+                mediaPreviewContainer.style.display = 'flex';
+            });
+            
+            cropper.onCancel(() => {
+                cropContainer.classList.add('hidden');
+                fileInput.value = '';
+                currentImageFile = null;
+            });
+        }).catch(error => {
+            console.error('Error loading image for cropping:', error);
+            if (typeof showErrorPopup === 'function') {
+                showErrorPopup('Error', 'Could not load image for cropping');
+            }
         });
     }
     
@@ -290,6 +280,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="post-user-info">
                     <p class="post-username">${post.post_username || post.username}</p>
                     ${post.location ? `<p class="post-location">${post.location}</p>` : ''}
+                    <p class="post-time">${formatTime(post.created_at)}</p>
                 </div>
             </div>
             ${post.type === 'image' ? 
@@ -315,7 +306,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     <span class="username">${post.post_username || post.username}</span> ${post.caption}
                 </div>
             ` : ''}
-            <div class="post-time">${formatTime(post.created_at)}</div>
             <div class="comments-section" id="comments-${post.id}">
                 <!-- Comments will be loaded here -->
             </div>
@@ -402,6 +392,10 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.liked) {
                 likeBtn.classList.add('liked');
+                // Show success animation for like
+                if (typeof showSuccessPopup === 'function') {
+                    showSuccessPopup('Liked!', 'You liked this post', 1500);
+                }
             } else {
                 likeBtn.classList.remove('liked');
             }
@@ -432,6 +426,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 commentInput.value = '';
                 loadComments(postId);
+                // Show success popup for comment
+                if (typeof showSuccessPopup === 'function') {
+                    showSuccessPopup('Comment Added!', 'Your comment has been posted', 1500);
+                }
             }
         })
         .catch(error => console.error('Error adding comment:', error));

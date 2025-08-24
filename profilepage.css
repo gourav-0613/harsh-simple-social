@@ -167,6 +167,10 @@ body {
   transition: color 0.3s ease;
 }
 
+.stats .posts-stat {
+  order: -1; /* Move posts to the left */
+}
+
 .bio {
   font-size: 1rem;
   margin-top: 10px;
