@@ -49,12 +49,12 @@ if (isset($_REQUEST['publish-btn']) && $_REQUEST['publish-btn'] == "true") {
       <!-- Stories Section -->
       <div id="stories-container" class="stories-container">
         <div class="story-item add-story" onclick="document.getElementById('story-input').click()">
-          <div class="story-avatar">
+          <!-- <div class="story-avatar">
             <i class="fas fa-plus"></i>
           </div>
           <span>Your Story</span>
           <input type="file" id="story-input" accept="image/*,video/*" style="display: none;">
-        </div>
+        </div> -->
         <!-- Stories will be loaded here -->
       </div>
 

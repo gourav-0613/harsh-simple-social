@@ -1,3 +1,20 @@
+<?php
+include "config/connect.php";
+include "config/auth.php";
+requireLogin();
+
+$current_user = getCurrentUser();
+// Fallback for missing data to prevent errors
+$current_user = array_merge([
+    'profile_picture' => 'https://placehold.co/180x180/8897AA/FFFFFF?text=User',
+    'username' => 'guest',
+    'followers_count' => 0,
+    'following_count' => 0,
+    'firstName' => 'New',
+    'lastName' => 'User',
+    'bio' => 'Welcome to your profile!'
+], $current_user);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,20 +29,20 @@
   <div class="sidebar">
     <div class="icon" id="profile-home-btn"><i class="fas fa-home"></i></div>
     <div class="icon" id="profile-settings-btn"><i class="fa-solid fa-gear"></i></div>
-    <div class="icon" id="profile-activity-btn"><i class="fas fa-chart-line"></i></div> <!-- New: Your Activity Button -->
+    <div class="icon" id="profile-activity-btn"><i class="fas fa-chart-line"></i></div>
   </div>
   
   <div class="profile-container" id="profile-container">
     <div class="profile-header">
-      <div class="profile-pic" id="profile-pic" style="background-image: url('https://placehold.co/180x180/8897AA/FFFFFF?text=Profile');"></div>
+      <div class="profile-pic" id="profile-pic" style="background-image: url('<?php echo htmlspecialchars($current_user['profile_picture']); ?>');"></div>
       <div class="profile-info">
-        <h1 class="username" id="profile-username">Loading...</h1>
+        <h1 class="username" id="profile-username"><?php echo htmlspecialchars($current_user['username']); ?></h1>
         <div class="stats">
-          <div><strong>0</strong><br>followers</div>
-          <div><strong>0</strong><br>following</div>
+          <div><strong><?php echo htmlspecialchars($current_user['followers_count']); ?></strong><br>followers</div>
+          <div><strong><?php echo htmlspecialchars($current_user['following_count']); ?></strong><br>following</div>
         </div>
         <div class="bio">
-          <p><strong id="profile-fullname">Your Full Name</strong><br><span id="profile-bio">A short bio about yourself.</span></p>
+          <p><strong id="profile-fullname"><?php echo htmlspecialchars($current_user['firstName'] . ' ' . $current_user['lastName']); ?></strong><br><span id="profile-bio"><?php echo htmlspecialchars($current_user['bio']); ?></span></p>
         </div>
         <div class="buttons">
           <button id="edit-profile-btn">Edit Profile</button>
@@ -37,18 +54,15 @@
     <div class="center-icon"><i class="fas fa-image"></i></div>
 
     <div class="post-grid" id="user-posts-container">
-      <!-- User posts will be loaded here dynamically -->
       <p class="no-posts-message">No posts yet. Go to home to create one!</p>
     </div>
   </div>
 
-  <!-- Settings Popup -->
   <div class="popup-overlay hidden" id="settings-popup">
     <div class="popup-content settings-popup-content">
       <button class="popup-close-btn" id="settings-close-btn">&times;</button>
       <h2>Settings</h2>
       <ul>
-        <!-- Dark Mode toggle moved to the top -->
         <li class="settings-toggle-item">
           <span>Dark Mode</span>
           <label class="switch">
@@ -64,7 +78,6 @@
     </div>
   </div>
 
-  <!-- Under Construction / Coming Soon Modal -->
   <div class="popup-overlay hidden" id="underConstructionModal">
     <div class="popup-content under-construction-content">
       <h2>Coming Soon!</h2>
@@ -73,7 +86,6 @@
     </div>
   </div>
 
-  <!-- Logout Confirmation Popup -->
   <div class="popup-overlay hidden" id="logout-confirm-popup">
     <div class="logout-confirm-content">
       <h2>Log Out</h2>

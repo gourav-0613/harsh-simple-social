@@ -1,15 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     const profileContainer = document.getElementById('profile-container');
-    const profilePic = document.getElementById('profile-pic');
-    const profileUsername = document.getElementById('profile-username');
-    const profileFullname = document.getElementById('profile-fullname');
-    const profileBio = document.getElementById('profile-bio');
     const userPostsContainer = document.getElementById('user-posts-container');
     const viewArchiveBtn = document.getElementById('view-archive-btn');
 
     const profileHomeBtn = document.getElementById('profile-home-btn');
     const profileSettingsBtn = document.getElementById('profile-settings-btn');
-    const profileActivityBtn = document.getElementById('profile-activity-btn'); // New: Your Activity Button
+    const profileActivityBtn = document.getElementById('profile-activity-btn');
     const editProfileBtn = document.getElementById('edit-profile-btn');
 
     const settingsPopup = document.getElementById('settings-popup');
@@ -36,34 +32,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // --- Dynamic Profile Data (Placeholder) ---
-    let userData = {
-        username: 'JohnDoe',
-        profilePicUrl: 'https://placehold.co/180x180/8897AA/FFFFFF?text=JD',
-        fullName: 'Johnathan Doe',
-        bio: 'Passionate about web development and open source projects.'
-    };
-
-    function updateProfileUI() {
-        profileUsername.textContent = userData.username;
-        profilePic.style.backgroundImage = `url('${userData.profilePicUrl}')`;
-        profileFullname.textContent = userData.fullName;
-        profileBio.textContent = userData.bio;
-    }
-
-    // Initial UI update
-    updateProfileUI();
-    
     // Load user posts
     loadUserPosts();
 
     // --- Dark Mode Initialization and Toggle ---
     if (localStorage.getItem('darkMode') === 'enabled') {
         document.documentElement.classList.add('dark-mode');
-        darkModeToggle.checked = true;
+        if(darkModeToggle) darkModeToggle.checked = true;
     } else {
         document.documentElement.classList.remove('dark-mode');
-        darkModeToggle.checked = false;
+        if(darkModeToggle) darkModeToggle.checked = false;
     }
 
     if (darkModeToggle) {
@@ -107,8 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Your Activity Button Functionality ---
     if (profileActivityBtn) {
         profileActivityBtn.addEventListener('click', function() {
-            underConstructionModal.classList.remove('hidden'); // Show under construction modal
-            toggleBlur(true); // Apply blur
+            underConstructionModal.classList.remove('hidden');
+            toggleBlur(true);
         });
     }
 
@@ -188,6 +166,10 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('api/user_posts.php')
             .then(response => response.json())
             .then(posts => {
+                if (!posts || posts.error) {
+                    userPostsContainer.innerHTML = `<p class="no-posts-message">${posts ? posts.error : 'Could not load posts.'}</p>`;
+                    return;
+                }
                 if (posts.length === 0) {
                     userPostsContainer.innerHTML = '<p class="no-posts-message">No posts yet. Go to home to create one!</p>';
                     return;
@@ -210,6 +192,10 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('api/archived_posts.php')
             .then(response => response.json())
             .then(posts => {
+                 if (!posts || posts.error) {
+                    userPostsContainer.innerHTML = `<p class="no-posts-message">${posts ? posts.error : 'Could not load archive.'}</p>`;
+                    return;
+                }
                 if (posts.length === 0) {
                     userPostsContainer.innerHTML = '<p class="no-posts-message">No archived posts.</p>';
                     return;
@@ -226,7 +212,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
     
-    // Create post element for profile
     function createPostElement(post) {
         const postDiv = document.createElement('div');
         postDiv.className = 'post-grid-item';
@@ -251,7 +236,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        // Add event listeners
         const archiveBtn = postDiv.querySelector('.archive-btn');
         const deleteBtn = postDiv.querySelector('.delete-btn');
         
@@ -270,7 +254,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return postDiv;
     }
     
-    // Create archived post element
     function createArchivedPostElement(post) {
         const postDiv = document.createElement('div');
         postDiv.className = 'post-grid-item';
@@ -295,7 +278,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        // Add event listeners
         const unarchiveBtn = postDiv.querySelector('.unarchive-btn');
         const deleteBtn = postDiv.querySelector('.delete-btn');
         
@@ -314,76 +296,55 @@ document.addEventListener('DOMContentLoaded', function() {
         return postDiv;
     }
     
-    // Archive post function
     function archivePost(postId) {
         const formData = new FormData();
         formData.append('action', 'archive');
         formData.append('post_id', postId);
         
-        fetch('api/user_posts.php', {
-            method: 'POST',
-            body: formData
-        })
+        fetch('api/user_posts.php', { method: 'POST', body: formData })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                loadUserPosts(); // Reload posts
+                loadUserPosts();
             } else {
                 alert('Error archiving post: ' + (data.error || 'Unknown error'));
             }
         })
-        .catch(error => {
-            console.error('Error archiving post:', error);
-            alert('Error archiving post');
-        });
+        .catch(error => console.error('Error archiving post:', error));
     }
     
-    // Unarchive post function
     function unarchivePost(postId) {
         const formData = new FormData();
         formData.append('action', 'unarchive');
         formData.append('post_id', postId);
         
-        fetch('api/user_posts.php', {
-            method: 'POST',
-            body: formData
-        })
+        fetch('api/user_posts.php', { method: 'POST', body: formData })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                loadArchivedPosts(); // Reload archived posts
+                loadArchivedPosts();
             } else {
                 alert('Error unarchiving post: ' + (data.error || 'Unknown error'));
             }
         })
-        .catch(error => {
-            console.error('Error unarchiving post:', error);
-            alert('Error unarchiving post');
-        });
+        .catch(error => console.error('Error unarchiving post:', error));
     }
     
-    // Delete post function
     function deletePost(postId) {
         const formData = new FormData();
         formData.append('action', 'delete');
         formData.append('post_id', postId);
         
-        fetch('api/user_posts.php', {
-            method: 'POST',
-            body: formData
-        })
+        fetch('api/user_posts.php', { method: 'POST', body: formData })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                loadUserPosts(); // Reload posts
+                loadUserPosts();
             } else {
                 alert('Error deleting post: ' + (data.error || 'Unknown error'));
             }
         })
-        .catch(error => {
-            console.error('Error deleting post:', error);
-            alert('Error deleting post');
-        });
+        .catch(error => console.error('Error deleting post:', error));
     }
 
     // --- Close popups when clicking outside ---
