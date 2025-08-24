@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const cropCanvas = document.getElementById('crop-canvas');
     const cropBtn = document.getElementById('crop-btn');
     const cancelCropBtn = document.getElementById('cancel-crop-btn');
+    const recentForwardsContainer = document.getElementById('recent-forwards-container');
     
     let currentImageFile = null;
     let cropperInstance = null;
@@ -47,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load posts on page load
     loadPosts();
     loadStories();
+    loadRecentForwards();
     
     // Profile button - redirect to profile page with animation
     if (profileBtn) {
@@ -284,9 +286,9 @@ document.addEventListener('DOMContentLoaded', function() {
         postDiv.className = 'post-box';
         postDiv.innerHTML = `
             <div class="post-header">
-                <div class="post-avatar" style="background-image: url('${post.profile_picture || 'https://placehold.co/40x40/415A77/FFFFFF?text=' + (post.username ? post.username.charAt(0).toUpperCase() : 'U')}')"></div>
+                <div class="post-avatar" style="background-image: url('${post.profile_picture || 'https://placehold.co/45x45/C6AC8F/FFFFFF?text=' + (post.post_username ? post.post_username.charAt(0).toUpperCase() : 'U')}')"></div>
                 <div class="post-user-info">
-                    <p class="post-username">${post.username}</p>
+                    <p class="post-username">${post.post_username || post.username}</p>
                     ${post.location ? `<p class="post-location">${post.location}</p>` : ''}
                 </div>
             </div>
@@ -301,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <button class="action-btn comment-btn" data-post-id="${post.id}">
                     <i class="fas fa-comment"></i>
                 </button>
-                <button class="action-btn share-btn">
+                <button class="action-btn share-btn" data-post-id="${post.id}">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
@@ -310,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             ${post.caption ? `
                 <div class="post-caption">
-                    <span class="username">${post.username}</span>${post.caption}
+                    <span class="username">${post.post_username || post.username}</span> ${post.caption}
                 </div>
             ` : ''}
             <div class="post-time">${formatTime(post.created_at)}</div>
@@ -326,11 +328,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add event listeners for like and comment
         const likeBtn = postDiv.querySelector('.like-btn');
         const commentBtn = postDiv.querySelector('.comment-btn');
+        const shareBtn = postDiv.querySelector('.share-btn');
         const commentInput = postDiv.querySelector('.comment-input');
         const postCommentBtn = postDiv.querySelector('.post-comment-btn');
         
         likeBtn.addEventListener('click', () => toggleLike(post.id, likeBtn));
         commentBtn.addEventListener('click', () => loadComments(post.id));
+        shareBtn.addEventListener('click', () => forwardPost(post.id, shareBtn));
         postCommentBtn.addEventListener('click', () => addComment(post.id, commentInput));
         commentInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -339,6 +343,49 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         return postDiv;
+    }
+    
+    // Forward post function
+    function forwardPost(postId, shareBtn) {
+        const formData = new FormData();
+        formData.append('action', 'forward');
+        formData.append('post_id', postId);
+        
+        fetch('api/forwarded_posts.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success animation
+                shareBtn.style.color = '#10B981';
+                shareBtn.style.transform = 'scale(1.2)';
+                
+                setTimeout(() => {
+                    shareBtn.style.color = '';
+                    shareBtn.style.transform = '';
+                }, 1000);
+                
+                // Refresh forwarded posts panel
+                loadRecentForwards();
+                
+                // Show success popup
+                if (typeof showSuccessPopup === 'function') {
+                    showSuccessPopup('Post Shared', 'Post has been added to your forwards!');
+                }
+            } else {
+                if (typeof showErrorPopup === 'function') {
+                    showErrorPopup('Share Failed', data.error || 'Could not share post');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error forwarding post:', error);
+            if (typeof showErrorPopup === 'function') {
+                showErrorPopup('Error', 'An error occurred while sharing the post');
+            }
+        });
     }
     
     // Toggle like function
@@ -415,6 +462,83 @@ document.addEventListener('DOMContentLoaded', function() {
     function loadStories() {
         // This would load stories from the database
         // For now, we'll just show the "Add Story" option
+    }
+    
+    // Load recent forwarded posts
+    function loadRecentForwards() {
+        fetch('api/forwarded_posts.php')
+            .then(response => response.json())
+            .then(posts => {
+                if (posts.error || posts.length === 0) {
+                    if (recentForwardsContainer) {
+                        recentForwardsContainer.innerHTML = `
+                            <div class="no-forwards-message">
+                                <i class="fas fa-share"></i>
+                                <p>No forwarded posts yet</p>
+                                <p>Posts you share will appear here</p>
+                            </div>
+                        `;
+                    }
+                    return;
+                }
+                
+                if (recentForwardsContainer) {
+                    recentForwardsContainer.innerHTML = '';
+                    posts.forEach(post => {
+                        const forwardElement = createForwardElement(post);
+                        recentForwardsContainer.appendChild(forwardElement);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading forwarded posts:', error);
+                if (recentForwardsContainer) {
+                    recentForwardsContainer.innerHTML = `
+                        <div class="no-forwards-message">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Error loading forwards</p>
+                        </div>
+                    `;
+                }
+            });
+    }
+    
+    // Create forward element
+    function createForwardElement(post) {
+        const forwardDiv = document.createElement('div');
+        forwardDiv.className = 'forward-item';
+        forwardDiv.innerHTML = `
+            ${post.type === 'image' ? 
+                `<img src="${post.url}" alt="Forwarded post">` : 
+                `<video><source src="${post.url}"></video>`
+            }
+            <div class="forward-info">
+                <span class="forward-username">${post.post_username}</span>
+                <span class="forward-time">${formatTime(post.created_at)}</span>
+            </div>
+        `;
+        
+        // Add click event to view original post
+        forwardDiv.addEventListener('click', () => {
+            // For now, just scroll to top of feed
+            // In a full implementation, this would open the specific post
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        return forwardDiv;
+    }
+    
+    // Update loadRecentForwards call
+    function loadRecentForwardsOld() {
+        if (recentForwardsContainer) {
+            recentForwardsContainer.innerHTML = `
+                <div class="no-forwards-message">
+                    <i class="fas fa-share"></i>
+                    <p>No forwarded posts yet</p>
+                    <p>Posts you share will appear here</p>
+                </div>
+            `;
+        }
     }
     
     // Format time function

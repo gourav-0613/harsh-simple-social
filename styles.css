@@ -1,564 +1,103 @@
-/* Combined Stylesheet */
+<?php
+include "config/connect.php";
+include "config/auth.php";
+requireLogin();
 
-/* Dark Mode Color Palette */
-:root {
-  /* Default Light Mode Colors */
-  --primary-dark: #0D1B2A;
-  --secondary-dark: #1B263B;
-  --accent-blue: #415A77;
-  --light-blue: #778DA9;
-  --light-gray: #E0E1DD;
-  --text-dark: #0D1B2A;
-  --main-bg-color: #E0E1DD;
-  --form-bg-color: rgba(27, 38, 59, 0.1);
-  --form-border-color: rgba(65, 90, 119, 0.3);
-  --form-shadow-color: rgba(13, 27, 42, 0.15);
-  --intro-heading-color: #0D1B2A;
-  --intro-tagline-color: #415A77;
-  --warm-cream-popup: #E0E1DD;
-  --dusty-blue: #778DA9;
-}
+$current_user = getCurrentUser();
+// Fallback for missing data to prevent errors
+$current_user = array_merge([
+    'profile_picture' => 'https://placehold.co/180x180/8897AA/FFFFFF?text=User',
+    'username' => 'guest',
+    'followers_count' => 0,
+    'following_count' => 0,
+    'firstName' => 'New',
+    'lastName' => 'User',
+    'bio' => 'Welcome to your profile!'
+], $current_user);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Page</title>
+  <link rel="stylesheet" href="profilepage.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="sidebar">
+    <div class="icon" id="profile-home-btn"><i class="fas fa-home"></i></div>
+    <div class="icon" id="profile-settings-btn"><i class="fa-solid fa-gear"></i></div>
+    <div class="icon" id="profile-activity-btn"><i class="fas fa-chart-line"></i></div>
+  </div>
+  
+  <div class="profile-container" id="profile-container">
+    <div class="profile-header">
+      <div class="profile-pic" id="profile-pic" style="background-image: url('<?php echo htmlspecialchars($current_user['profile_picture']); ?>');"></div>
+      <div class="profile-info">
+        <h1 class="username" id="profile-username"><?php echo htmlspecialchars($current_user['username']); ?></h1>
+        <div class="stats">
+          <div><strong><?php echo htmlspecialchars($current_user['followers_count']); ?></strong><br>followers</div>
+          <div><strong><?php echo htmlspecialchars($current_user['following_count']); ?></strong><br>following</div>
+        </div>
+        <div class="bio">
+          <p><strong id="profile-fullname"><?php echo htmlspecialchars($current_user['firstName'] . ' ' . $current_user['lastName']); ?></strong><br><span id="profile-bio"><?php echo htmlspecialchars($current_user['bio']); ?></span></p>
+        </div>
+        <div class="buttons">
+          <button id="edit-profile-btn">Edit Profile</button>
+          <button id="view-archive-btn">View Archive</button>
+        </div>
+      </div>
+    </div>
 
+    <div class="center-icon"><i class="fas fa-image"></i></div>
 
-/* Reset and base styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
+    <div class="post-grid" id="user-posts-container">
+      <p class="no-posts-message">No posts yet. Go to home to create one!</p>
+    </div>
+  </div>
 
-body {
-  background: linear-gradient(135deg, var(--light-gray) 0%, var(--dusty-blue) 100%);
-  min-height: 100vh;
-  color: var(--text-dark);
-  font-size: 16px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  display: grid; /* Use grid to easily center the main container */
-  place-items: center;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  padding-top: 80px;
-  padding-bottom: 20px;
-}
+  <div class="popup-overlay hidden" id="settings-popup">
+    <div class="popup-content settings-popup-content">
+      <button class="popup-close-btn" id="settings-close-btn">&times;</button>
+      <h2>Settings</h2>
+      <ul>
+        <li class="settings-toggle-item">
+          <span>Dark Mode</span>
+          <label class="switch">
+            <input type="checkbox" id="darkModeToggle">
+            <span class="slider round"></span>
+          </label>
+        </li>
+        <li id="settings-qrcode-btn">QR Code</li>
+        <li id="settings-privacy-btn">Privacy</li>
+        <li id="settings-logout-btn">Log Out</li>
+        <li id="settings-cancel-btn">Cancel</li>
+      </ul>
+    </div>
+  </div>
 
-/* Top links */
-.top-links {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  font-size: 18px;
-  font-family: 'Georgia', serif;
-  padding: 0 30px;
-  box-sizing: border-box;
-  background-color: var(--secondary-dark);
-  border-radius: 0 0 12px 12px;
-  position: fixed;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  transition: background-color 0.3s ease;
-  height: 60px;
-  align-items: center;
-}
+  <div class="popup-overlay hidden" id="underConstructionModal">
+    <div class="popup-content under-construction-content">
+      <h2>Coming Soon!</h2>
+      <p>This feature is currently under construction. Please check back later!</p>
+      <button class="popup-btn confirm" id="under-construction-ok-btn">OK</button>
+    </div>
+  </div>
 
-.top-links a {
-  color: white;
-  background-color: var(--secondary-dark);
-  padding: 8px 16px;
-  border-radius: 12px;
-  text-decoration: none;
-  margin: 0 10px;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  font-weight: 600;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
+  <div class="popup-overlay hidden" id="logout-confirm-popup">
+    <div class="logout-confirm-content">
+      <h2>Log Out</h2>
+      <p>Are you sure you want to log out?</p>
+      <div class="logout-confirm-buttons">
+        <button class="logout-btn-confirm" id="confirm-logout-btn">Log Out</button>
+        <button class="logout-btn-cancel" id="cancel-logout-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
 
-.top-links a:hover {
-  background-color: var(--accent-blue);
-  color: var(--light-gray);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-/* Main Content Area - new wrapper for intro and forms */
-.main-container {
-    display: flex;
-    width: 100%;
-    max-width: 1300px;
-    padding: 0 40px;
-    align-items: stretch; /* Changed to stretch to make columns equal height */
-    justify-content: center;
-    gap: 50px;
-    flex-wrap: wrap;
-}
-
-.left-section {
-    flex: 1.2;
-    display: flex;
-    flex-direction: column;
-    min-width: 350px;
-}
-
-.right-section {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 400px;
-}
-
-
-/* Intro Section (Simple Social Network heading and tagline) */
-.intro-section {
-  text-align: left;
-  padding: 20px 0;
-}
-
-.intro-section h1 {
-  font-size: 3.5rem;
-  font-weight: 700;
-  color: var(--primary-dark);
-  font-family: 'Playfair Display', serif;
-  line-height: 1.2;
-  margin-bottom: 15px;
-  transition: color 0.3s ease;
-}
-
-.intro-section .tagline {
-  font-size: 1.5rem;
-  color: var(--accent-blue);
-  font-family: 'Georgia', serif;
-  transition: color 0.3s ease;
-}
-
-/* Empty box for spacing and alignment */
-.empty-box {
-    flex-grow: 1; /* Allows the box to fill available space */
-    margin-top: 20px; /* Adds space between tagline and the box */
-    background-color: rgba(128, 128, 128, 0.2); /* Subtle grey background */
-    border-radius: 14px; /* Rounded corners */
-}
-
-
-/* Auth Forms Wrapper (holds sign-in and sign-up forms) */
-.auth-forms-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 450px;
-  height: 580px; /* Set height to accommodate the taller (register) form */
-}
-
-/* Auth Box - new styling for individual sign-in/sign-up forms */
-.auth-box {
-  background-color: var(--form-bg-color);
-  padding: 2rem;
-  border-radius: 14px;
-  box-shadow: 0 15px 30px var(--form-shadow-color);
-  transition: box-shadow 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
-  position: absolute;
-  width: 100%;
-  left: 0;
-  top: 0;
-}
-
-.auth-box:hover {
-  box-shadow: 0 20px 40px var(--form-shadow-color);
-  transform: translateY(-5px);
-}
-
-/* Form titles */
-.form-title {
-  font-size: 2.2rem;
-  font-weight: 700;
-  text-align: center;
-  padding: 1rem 0;
-  margin-bottom: 1rem;
-  color: var(--primary-dark);
-  font-family: 'Playfair Display', serif;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  user-select: none;
-  transition: color 0.3s ease;
-}
-
-.input-group {
-  padding: 0.8rem 0;
-  position: relative;
-}
-
-.input-group i {
-  position: absolute;
-  top: 50%;
-  left: 0.6rem;
-  transform: translateY(-50%);
-  color: var(--accent-blue);
-  font-size: 1.3rem;
-  transition: color 0.3s ease;
-}
-
-input {
-  color: var(--text-dark);
-  width: 100%;
-  background-color: transparent;
-  border: none;
-  border-bottom: 2.5px solid var(--dusty-blue);
-  padding: 10px 0 10px 3rem;
-  font-size: 1.1rem;
-  transition: border-color 0.3s ease, color 0.3s ease;
-  font-weight: 500;
-}
-
-input:focus {
-  outline: none;
-  border-bottom: 2.5px solid var(--accent-blue);
-  color: var(--text-dark);
-}
-
-input::placeholder {
-  color: transparent;
-}
-
-label {
-  color: var(--accent-blue);
-  position: absolute;
-  left: 3rem;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: text;
-  transition: 0.3s ease all;
-  font-size: 0.95rem;
-  font-weight: 600;
-  user-select: none;
-}
-
-input:focus ~ label,
-input:not(:placeholder-shown) ~ label {
-  top: -0.2rem;
-  color: var(--primary-dark);
-  font-size: 0.85rem;
-  font-weight: 700;
-}
-
-/* Recover password link */
-.recover {
-  text-align: right;
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.recover a {
-  text-decoration: none;
-  color: var(--accent-blue);
-  transition: color 0.3s ease;
-  font-weight: 600;
-}
-
-.recover a:hover {
-  color: var(--primary-dark);
-  text-decoration: underline;
-}
-
-/* Buttons */
-.btn {
-  font-size: 1.1rem;
-  padding: 10px 0;
-  border-radius: 8px;
-  outline: none;
-  border: none;
-  width: 100%;
-  background: var(--accent-blue);
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  box-shadow: 0 4px 10px rgba(125, 125, 235, 0.6);
-  user-select: none;
-  margin-top: 1rem;
-}
-
-.btn:hover {
-  background: var(--primary-dark);
-  box-shadow: 0 6px 18px rgba(50, 50, 150, 0.8);
-  transform: translateY(-2px);
-}
-
-/* Or separator */
-.or {
-  font-size: 1rem;
-  margin-top: 1rem;
-  text-align: center;
-  color: var(--accent-blue);
-  font-weight: 700;
-  user-select: none;
-  transition: color 0.3s ease;
-}
-
-/* Social icons */
-.icons {
-  text-align: center;
-  margin-top: 1rem;
-}
-
-.icons i {
-  color: var(--accent-blue);
-  padding: 0.8rem 1.5rem;
-  border-radius: 12px;
-  font-size: 1.5rem;
-  cursor: pointer;
-  border: 2.5px solid var(--dusty-blue);
-  margin: 0 12px;
-  transition: all 0.3s ease;
-  user-select: none;
-}
-
-.icons i:hover {
-  background: var(--primary-dark);
-  font-size: 1.6rem;
-  border: 2.5px solid var(--accent-blue);
-  box-shadow: 0 6px 15px rgba(50, 50, 150, 0.7);
-}
-
-/* Links below forms */
-.links {
-  display: flex; /* Use flexbox to align items in a row */
-  justify-content: center; /* Center the items horizontally */
-  align-items: center; /* Vertically align the items */
-  padding: 0 1rem;
-  margin-top: 1rem;
-  font-weight: 700;
-  user-select: none;
-  flex-wrap: nowrap; /* Prevents wrapping to a new line */
-  gap: 10px; /* Adds a small gap between the text and button */
-}
-
-.links p {
-    color: var(--text-dark);
-}
-
-.links button {
-  color: var(--accent-blue);
-  border: none;
-  background-color: transparent;
-  font-size: 1.05rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: color 0.3s ease;
-  user-select: none;
-}
-
-.links button:hover {
-  text-decoration: underline;
-  color: var(--primary-dark);
-}
-
-/* Modal styles */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 2000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
-  animation: fadeIn 0.4s ease forwards;
-}
-
-.modal.show {
-  display: block;
-  animation: fadeIn 0.4s ease forwards;
-}
-
-.modal-content {
-  background-color: var(--warm-cream-popup);
-  margin: 8% auto;
-  padding: 2.5rem 3rem;
-  border: 1px solid var(--dusty-blue);
-  width: 90%;
-  max-width: 520px;
-  border-radius: 14px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
-  font-family: 'Poppins', sans-serif;
-  color: var(--text-dark);
-  transform: translateY(-20px);
-  opacity: 0;
-  animation: slideIn 0.4s ease forwards;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-.modal.show .modal-content {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-.close-btn {
-  color: var(--text-dark);
-  float: right;
-  font-size: 30px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: color 0.3s ease;
-  user-select: none;
-}
-
-.close-btn:hover,
-.close-btn:focus {
-  color: var(--light-blue);
-  text-decoration: none;
-  cursor: pointer;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Responsive adjustments */
-@media (max-width: 960px) {
-  .main-container {
-    flex-direction: column;
-    gap: 0;
-    padding: 20px;
-    align-items: center; /* Revert to center for stacked layout */
-  }
-  .intro-section {
-    text-align: center;
-  }
-  .left-section {
-    align-items: center;
-  }
-  .right-section {
-      width: 100%;
-  }
-  .empty-box {
-      display: none; /* Hide the empty box on small screens to save space */
-  }
-}
-
-@media (max-width: 600px) {
-  body {
-    padding-top: 70px;
-  }
-  .top-links {
-    height: 50px;
-  }
-  .intro-section h1 {
-    font-size: 2.5rem;
-  }
-  .intro-section .tagline {
-    font-size: 1.2rem;
-  }
-  .auth-box {
-    padding: 1.8rem 2rem;
-  }
-  .auth-forms-wrapper {
-      height: 550px;
-  }
-  .form-title {
-    font-size: 1.8rem;
-  }
-  .input-group {
-    padding: 0.8rem 0;
-  }
-  .icons i {
-    padding: 0.6rem 1.2rem;
-    font-size: 1.3rem;
-    margin: 0 10px;
-  }
-  .links {
-    padding: 0 2rem;
-    font-size: 0.95rem;
-  }
-}
-
-/* Utility classes for form visibility */
-.hidden {
-  display: block !important;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  transform: translateX(-100px);
-}
-
-.visible {
-  display: block !important;
-  opacity: 1;
-  pointer-events: auto;
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  transform: translateX(0);
-}
-
-/* New styles for help modal form */
-.modal-content .help-form-group {
-  margin-top: 15px;
-  margin-bottom: 10px;
-}
-
-.modal-content .help-form-group p {
-  color: var(--text-dark);
-  margin-bottom: 8px;
-  font-size: 1rem;
-  transition: color 0.3s ease;
-}
-
-.modal-content input[type="text"],
-.modal-content input[type="email"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid var(--dusty-blue);
-  border-radius: 5px;
-  background-color: var(--primary-blue);
-  color: var(--text-dark);
-  font-size: 1rem;
-  box-sizing: border-box;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-.modal-content input[type="text"]::placeholder,
-.modal-content input[type="email"]::placeholder {
-  color: var(--light-blue);
-}
-
-.modal-content input[type="text"]:focus,
-.modal-content input[type="email"]:focus {
-  outline: none;
-  border-color: var(--light-blue);
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-}
-
-.help-submit-btn {
-  display: block;
-  width: 100%;
-  padding: 12px 20px;
-  margin-top: 20px;
-  background-color: var(--accent-blue);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  font-weight: 600;
-  box-shadow: 0 4px 10px rgba(125, 125, 235, 0.4);
-}
-
-.help-submit-btn:hover {
-  background-color: var(--primary-dark);
-  box-shadow: 0 6px 15px rgba(50, 50, 150, 0.6);
-}
+  <script src="profile.js"></script>
+  <script src="dark-mode.js"></script>
+</body>
+</html>

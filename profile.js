@@ -85,8 +85,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Your Activity Button Functionality ---
     if (profileActivityBtn) {
         profileActivityBtn.addEventListener('click', function() {
-            underConstructionModal.classList.remove('hidden');
             toggleBlur(true);
+            setTimeout(() => {
+                window.location.href = 'activity_page.php';
+            }, 300);
         });
     }
 

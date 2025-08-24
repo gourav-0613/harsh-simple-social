@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         userDiv.addEventListener('click', () => {
-            window.location.href = `profile.php?user=${user.username}`;
+            window.location.href = `public_profile.php?user=${user.username}`;
         });
         
         return userDiv;

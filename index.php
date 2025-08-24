@@ -4,10 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AppName - Login</title>
+  <title>Nexus - Connect & Share</title>
   <link rel="stylesheet" href="styles.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 
 <body>
@@ -21,8 +21,8 @@
     <!-- Left column for intro text and empty box -->
     <div class="left-section">
       <div class="intro-section">
-        <h1>Simple Social Network</h1>
-        <p class="tagline">Where your voice becomes a vibe</p>
+        <h1>Nexus</h1>
+        <p class="tagline">Connect. Share. Inspire.</p>
       </div>
       <!-- This is the new empty container for spacing -->
       <div class="empty-box"></div>
@@ -46,7 +46,7 @@
                 <label for="password">Password</label>
             </div>
             <p class="recover">
-              <a href="#">Recover Password</a>
+              <a href="forgot_password.php">Forgot Password</a>
             </p>
            <input type="submit" class="btn" value="Sign In" name="signIn">
           </form>
@@ -116,7 +116,7 @@
     <div class="modal-content">
       <span class="close-btn" id="closeHelp">&times;</span>
       <h2>Help Center</h2>
-      <p>Welcome to the Help Center of Simple Social Network.</p>
+      <p>Welcome to the Help Center of Nexus.</p>
       <p>If you're having trouble logging in, make sure:</p>
       <ul>
         <li>Your <strong>username</strong> is correct</li>
@@ -151,13 +151,26 @@
     <div class="modal-content">
       <span class="close-btn" id="contactclose-btn">&times;</span>
       <h2>Contact Information</h2>
-      <p><strong>Email:</strong> support@simplesocial.com</p>
+      <p><strong>Email:</strong> support@nexus.com</p>
       <p><strong>Telephone:</strong> +91-XXX-XXXXXXX</p>
       <p><strong>Mobile:</strong> +91-XXXXXXXXXX</p>
     </div>
   </div>
+  
+  <!-- Custom Nexus Popups -->
+  <div id="nexus-popup-overlay" class="nexus-popup-overlay">
+    <div id="nexus-popup" class="nexus-popup">
+      <div id="nexus-popup-content">
+        <h3 id="nexus-popup-title">Success</h3>
+        <p id="nexus-popup-message">Operation completed successfully!</p>
+        <button id="nexus-popup-btn" class="nexus-popup-btn">OK</button>
+      </div>
+    </div>
+  </div>
+  
   <script src="script.js"></script>
   <script src="dark-mode.js"></script>
+  <script src="nexus-popups.js"></script>
 </body>
 
 </html>

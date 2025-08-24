@@ -28,12 +28,12 @@ if (isset($_REQUEST['publish-btn']) && $_REQUEST['publish-btn'] == "true") {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Social Media Page</title>
+  <title>Nexus - Home</title>
   
   <link rel="stylesheet" href="homestyle.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div class="container" id="main-container">
@@ -84,6 +84,13 @@ if (isset($_REQUEST['publish-btn']) && $_REQUEST['publish-btn'] == "true") {
     </main>
 
     <div class="right-panel">
+      <div class="recent-forwards">
+        <h3>Recent Forwards</h3>
+        <div id="recent-forwards-container">
+          <!-- Recent forwarded posts will be loaded here -->
+        </div>
+      </div>
+      
       <div class="top-buttons">
         <button class="top-btn" id="notifications-btn"><i class="fas fa-heart"></i></button>
         <button class="top-btn" id="logout-btn">Log-out</button>
@@ -108,11 +115,22 @@ if (isset($_REQUEST['publish-btn']) && $_REQUEST['publish-btn'] == "true") {
     <div class="popup-content"><button class="popup-close-btn" id="about-close-btn">&times;</button>
       <h2>About Us</h2>
       <div style="text-align: left; margin-top: 20px;">
-        <p><strong>Website Name:</strong> Simple Social Network</p>
+        <p><strong>Website Name:</strong> Nexus</p>
         <p><strong>Version:</strong> 1.0</p>
-        <p><strong>Email:</strong> support@simplesocial.com</p>
+        <p><strong>Email:</strong> support@nexus.com</p>
         <br>
-        <p style="text-align: center; font-style: italic;">"Where your voice becomes a vibe"</p>
+        <p style="text-align: center; font-style: italic;">"Connect. Share. Inspire."</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Custom Nexus Popups -->
+  <div id="nexus-popup-overlay" class="nexus-popup-overlay">
+    <div id="nexus-popup" class="nexus-popup">
+      <div id="nexus-popup-content">
+        <h3 id="nexus-popup-title">Success</h3>
+        <p id="nexus-popup-message">Operation completed successfully!</p>
+        <button id="nexus-popup-btn" class="nexus-popup-btn">OK</button>
       </div>
     </div>
   </div>
@@ -120,6 +138,7 @@ if (isset($_REQUEST['publish-btn']) && $_REQUEST['publish-btn'] == "true") {
   <script src="home.js"></script>
   <script src="enhanced_home.js"></script>
   <script src="dark-mode.js"></script>
+  <script src="nexus-popups.js"></script>
   <?php
     // Posts are now loaded via JavaScript API calls
   ?>

@@ -46,15 +46,62 @@ document.addEventListener('DOMContentLoaded', function() {
     editProfileForm.addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
 
-        // Update currentProfileData with form values
-        currentProfileData.userId = userIdInput.value;
-        currentProfileData.fullName = fullNameInput.value;
-        currentProfileData.bio = bioTextarea.value;
-        currentProfileData.gender = genderSelect.value;
+        // Show loading popup
+        if (typeof showLoadingPopup === 'function') {
+            showLoadingPopup('Updating Profile', 'Please wait while we update your profile...');
+        }
 
-        console.log("Saving profile data:", currentProfileData);
+        // Create FormData object
+        const formData = new FormData();
+        formData.append('username', userIdInput.value);
+        formData.append('firstName', fullNameInput.value);
+        formData.append('lastName', lastNameInput.value);
+        formData.append('bio', bioTextarea.value);
+        
+        // Add profile picture if changed
+        if (profilePictureInput.files[0]) {
+            formData.append('profilePicture', profilePictureInput.files[0]);
+        }
 
-        alert("Profile updated successfully!"); // Using alert for simplicity, consider custom modal
-        window.location.href = 'profilepage.php';
+        // Submit to server
+        fetch('api/update_profile.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (typeof hidePopup === 'function') {
+                hidePopup();
+            }
+            
+            if (data.success) {
+                if (typeof showSuccessPopup === 'function') {
+                    showSuccessPopup('Profile Updated Successfully!', 'Your profile changes have been saved.');
+                    setTimeout(() => {
+                        window.location.href = 'profilepage.php';
+                    }, 2000);
+                } else {
+                    alert("Profile updated successfully!");
+                    window.location.href = 'profilepage.php';
+                }
+            } else {
+                if (typeof showErrorPopup === 'function') {
+                    showErrorPopup('Update Failed', data.error || 'Could not update profile');
+                } else {
+                    alert("Error: " + (data.error || 'Could not update profile'));
+                }
+            }
+        })
+        .catch(error => {
+            if (typeof hidePopup === 'function') {
+                hidePopup();
+            }
+            console.error('Error updating profile:', error);
+            if (typeof showErrorPopup === 'function') {
+                showErrorPopup('Error', 'An error occurred while updating your profile');
+            } else {
+                alert("An error occurred while updating your profile");
+            }
+        });
     });
 });

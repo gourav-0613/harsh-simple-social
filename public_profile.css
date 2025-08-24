@@ -1,13 +1,13 @@
-/* Color Palette from homestyle.css for consistency */
+/* Public Profile Page Styles */
 :root {
-  /* New Nexus Color Palette */
+  /* Nexus Color Palette */
   --primary-dark: #0A0908;
   --secondary-dark: #22333B;
   --primary-light: #EAE0D5;
   --accent-highlight: #C6AC8F;
   --subtle-accent: #5E503F;
   
-  /* Mapped variables for consistency */
+  /* Mapped variables */
   --lightest-bg: var(--primary-light);
   --sidebar-bg: rgba(34, 51, 59, 0.95);
   --dusty-blue: var(--accent-highlight);
@@ -18,44 +18,27 @@
   --post-border: rgba(198, 172, 143, 0.3);
 }
 
-/* Dark Mode Overrides for profilepage.css */
+/* Dark Mode Overrides */
 html.dark-mode {
-  /* NEW Dark Mode Palette */
-  --lightest-bg: #121212; /* charcoal black */
-  --sidebar-bg: #2a2a2a; /* Lighter charcoal for component backgrounds */
-  --dusty-blue: #888888; /* soft gray */
-  --light-lavender: #B0B0B0; /* medium gray */
-  --dark-text: #E0E0E0; /* light gray */
-  --warm-cream-popup: #2a2a2a; /* Lighter charcoal for popups */
-  --post-bg: #2a2a2a; /* Lighter charcoal for posts */
-  --post-border: #444444; /* dark gray */
-  --input-bg: #444444; /* dark gray for inputs */
-
-  /* Mapping new palette to existing variable roles for dark mode */
-  --main-bg-color: var(--lightest-bg); /* Main page background */
-  --background-dark: var(--sidebar-bg); /* General dark background */
-  --text-dark: var(--dark-text); /* Primary text color in dark mode */
-  --primary-blue: var(--light-lavender); /* Secondary accents/text */
-  --primary-blue-dark: var(--dark-text); /* Primary text/headings */
-  --form-bg-color: var(--sidebar-bg); /* Form background */
-  --form-border-color: var(--dusty-blue); /* Form border */
-  --form-shadow-color: rgba(0, 0, 0, 0.8); /* Darker shadow for dark mode */
-  --intro-heading-color: var(--dark-text); /* Intro heading */
-  --intro-tagline-color: var(--light-lavender); /* Intro tagline */
-  /* --warm-cream-popup is already mapped directly above */
-  /* --dusty-blue is already mapped directly above */
-  --light-blue: var(--dusty-blue); /* Map existing light-blue role to new dusty-blue */
+  --lightest-bg: #121212;
+  --sidebar-bg: #2a2a2a;
+  --dusty-blue: #888888;
+  --light-lavender: #B0B0B0;
+  --dark-text: #E0E0E0;
+  --warm-cream-popup: #2a2a2a;
+  --post-bg: #2a2a2a;
+  --post-border: #444444;
 }
 
 body {
   margin: 0;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-highlight) 100%);
-  color: var(--dark-text); /* Apply dark-text to body for default text */
+  color: var(--dark-text);
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
-  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Sidebar */
@@ -74,10 +57,10 @@ body {
   color: var(--primary-light);
   padding: 18px;
   border-radius: 50%;
-  width: 30px; /* Adjusted size */
-  height: 30px; /* Adjusted size */
+  width: 30px;
+  height: 30px;
   text-align: center;
-  font-size: 20px; /* Adjusted size */
+  font-size: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -100,13 +83,12 @@ body {
   transition: filter 0.3s ease-in-out;
 }
 
-/* Blur effect for background when popup is active */
 .profile-container.blur-it {
     filter: blur(5px) brightness(0.7);
     pointer-events: none;
 }
 
-/* Other Profile Styles */
+/* Profile Header */
 .profile-header {
   display: flex;
   align-items: center;
@@ -150,21 +132,15 @@ body {
   transition: color 0.3s ease;
 }
 
-.stats div {
-  text-align: center;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.stats div:hover {
-  transform: translateY(-2px);
-}
-
 .stats strong {
   color: var(--dark-text);
   font-size: 1.2rem;
   font-weight: 600;
   transition: color 0.3s ease;
+}
+
+.stats div {
+  text-align: center;
 }
 
 .bio {
@@ -203,6 +179,14 @@ body {
   background: linear-gradient(135deg, var(--subtle-accent) 0%, var(--secondary-dark) 100%);
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(94, 80, 63, 0.4);
+}
+
+.buttons button.following {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+}
+
+.buttons button.requested {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
 }
 
 .center-icon {
@@ -285,55 +269,6 @@ body {
   gap: 5px;
 }
 
-.post-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.post-action-btn {
-  background: linear-gradient(135deg, var(--accent-highlight) 0%, var(--subtle-accent) 100%);
-  color: var(--primary-light);
-  border: none;
-  padding: 8px 12px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.post-action-btn:hover {
-  background: linear-gradient(135deg, var(--subtle-accent) 0%, var(--secondary-dark) 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.delete-btn {
-  background: #e74c3c !important;
-}
-
-.delete-btn:hover {
-  background: #c0392b !important;
-  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4) !important;
-}
-
-.archive-btn {
-  background: #f39c12 !important;
-}
-
-.archive-btn:hover {
-  background: #e67e22 !important;
-  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4) !important;
-}
-
-.unarchive-btn {
-  background: #27ae60 !important;
-}
-
-.unarchive-btn:hover {
-  background: #229954 !important;
-  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4) !important;
-}
-
 .no-posts-message {
   color: var(--subtle-accent);
   font-size: 1.2rem;
@@ -343,7 +278,19 @@ body {
   transition: color 0.3s ease;
 }
 
-/* === STYLES FOR ALL POPUPS === */
+.private-account-message {
+  color: var(--subtle-accent);
+  font-size: 1.2rem;
+  text-align: center;
+  grid-column: 1 / -1;
+  margin-top: 50px;
+  padding: 40px 20px;
+  background: var(--post-bg);
+  border-radius: 15px;
+  border: 1px solid var(--post-border);
+}
+
+/* Popup Styles */
 .hidden { display: none !important; }
 
 .popup-overlay {
@@ -418,174 +365,89 @@ body {
   border: 1px solid var(--post-border);
 }
 
-.popup-close-btn {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  background: transparent;
-  border: none;
-  font-size: 1.8rem;
-  cursor: pointer;
-  color: var(--light-lavender);
-  transition: color 0.2s;
-}
-
-.popup-close-btn:hover {
-  color: var(--accent-highlight);
-  background: rgba(198, 172, 143, 0.1);
-}
-
-/* Style for the Main Settings Menu */
-.settings-popup-content {
-  background: var(--warm-cream-popup);
-  backdrop-filter: blur(20px);
-  color: var(--dark-text);
-  border-radius: 15px;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 25px 50px rgba(10, 9, 8, 0.3);
-  border: 1px solid var(--post-border);
-  padding: 20px 0;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-.settings-popup-content h2 {
-    margin-bottom: 20px;
-    padding: 0 25px;
-    transition: color 0.3s ease;
-}
-.settings-popup-content ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.settings-popup-content li {
-  padding: 15px 25px;
-  border-bottom: 1px solid var(--post-border);
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.3s ease, border-color 0.3s ease;
-  font-family: 'Inter', sans-serif;
-  color: var(--dark-text);
-  font-size: 1.1rem;
-  display: flex; /* For toggle switch alignment */
-  justify-content: space-between; /* For toggle switch alignment */
-  align-items: center; /* For toggle switch alignment */
-}
-.settings-popup-content li:hover {
-  background: rgba(198, 172, 143, 0.1);
-}
-.settings-popup-content li:last-child {
-  border-bottom: none;
-}
-.settings-popup-content li a {
-  color: var(--dark-text);
-  text-decoration: none;
-  display: block;
-  flex-grow: 1; /* Allow link to take available space */
-  transition: color 0.3s ease;
-}
-
-/* Toggle Switch Styles */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 24px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
+/* Nexus Popup Styles */
+.nexus-popup-overlay {
+  position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc; /* Light mode off state */
-  transition: .4s;
-  border-radius: 24px;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 9, 8, 0.7);
+  backdrop-filter: blur(10px);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
 }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
+.nexus-popup-overlay.show {
+  opacity: 1;
+  visibility: visible;
 }
 
-input:checked + .slider {
-  background-color: var(--accent-highlight);
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px var(--accent-highlight);
-}
-
-input:checked + .slider:before {
-  transform: translateX(16px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 24px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-
-
-/* Style for the Under Construction / Coming Soon Popup */
-.under-construction-content {
-  background: var(--warm-cream-popup);
+.nexus-popup {
+  background: linear-gradient(135deg, var(--primary-light) 0%, rgba(234, 224, 213, 0.95) 100%);
   backdrop-filter: blur(20px);
-  color: var(--dark-text);
-  padding: 30px 40px;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 350px;
-  text-align: center;
-  font-family: 'Inter', sans-serif;
+  border-radius: 20px;
+  padding: 2rem 2.5rem;
   box-shadow: 0 25px 50px rgba(10, 9, 8, 0.3);
-  border: 1px solid var(--post-border);
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-.under-construction-content h2 { margin: 0 0 10px 0; font-size: 24px; transition: color 0.3s ease; }
-.under-construction-content p { margin: 0 0 25px 0; font-size: 16px; color: var(--subtle-accent); transition: color 0.3s ease; }
-
-/* Style for the Special Logout Confirmation Popup (Existing, adjusted colors) */
-.logout-confirm-content {
-  background: var(--warm-cream-popup);
-  backdrop-filter: blur(20px);
-  color: var(--dark-text);
-  padding: 30px 40px;
-  border-radius: 16px;
-  width: 90%;
+  border: 1px solid rgba(198, 172, 143, 0.3);
+  text-align: center;
   max-width: 400px;
-  text-align: center;
-  font-family: 'Inter', sans-serif;
-  box-shadow: 0 25px 50px rgba(10, 9, 8, 0.3);
-  border: 1px solid var(--post-border);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  width: 90%;
+  transform: translateY(-20px) scale(0.95);
+  transition: all 0.3s ease;
 }
-.logout-confirm-content h2 { margin: 0 0 10px 0; font-size: 24px; transition: color 0.3s ease; }
-.logout-confirm-content p { margin: 0 0 25px 0; font-size: 16px; color: var(--subtle-accent); transition: color 0.3s ease; }
-.logout-confirm-buttons { display: flex; justify-content: center; gap: 15px; }
-.logout-confirm-buttons button { border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.2s ease, background-color 0.3s ease, color 0.3s ease; }
-.logout-confirm-buttons button:hover { transform: scale(1.05); }
-.logout-btn-confirm { background-color: #e74c3c; color: white; }
-.logout-btn-cancel { background: rgba(255, 255, 255, 0.8); color: var(--dark-text); border: 1px solid var(--post-border); }
 
-/* Media Queries for responsiveness */
+.nexus-popup-overlay.show .nexus-popup {
+  transform: translateY(0) scale(1);
+}
+
+.nexus-popup.success {
+  border-left: 5px solid #10B981;
+}
+
+.nexus-popup.error {
+  border-left: 5px solid #EF4444;
+  background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+}
+
+.nexus-popup h3 {
+  color: var(--primary-dark);
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.nexus-popup p {
+  color: var(--subtle-accent);
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.nexus-popup-btn {
+  background: linear-gradient(135deg, var(--accent-highlight) 0%, var(--subtle-accent) 100%);
+  color: var(--primary-light);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.nexus-popup-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(198, 172, 143, 0.4);
+}
+
+/* Media Queries */
 @media (max-width: 768px) {
   .profile-container {
     margin-left: 0;
@@ -636,24 +498,11 @@ input:checked + .slider:before {
 
   .buttons button {
     width: 100%;
-    margin-right: 0;
-  }
-
-  .center-icon {
-    margin: 20px auto;
   }
 
   .post-grid {
     grid-template-columns: 1fr;
     width: 100%;
     padding: 0 10px;
-  }
-  
-  .stats {
-    gap: 20px;
-  }
-  
-  .stats div {
-    font-size: 0.9rem;
   }
 }

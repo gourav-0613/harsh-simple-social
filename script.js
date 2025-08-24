@@ -24,51 +24,69 @@ document.addEventListener("DOMContentLoaded", function () {
     loginForm.addEventListener('submit', function(e) {
       const formData = new FormData(loginForm);
       if (formData.get('signIn')) {
-        // Add loading animation
-        document.body.style.transition = 'opacity 0.5s ease';
-        document.body.style.opacity = '0.7';
-        
-        // Create loading overlay
-        const overlay = document.createElement('div');
-        overlay.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(135deg, #0D1B2A 0%, #415A77 100%);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 9999;
-          opacity: 0;
-          transition: opacity 0.5s ease;
-        `;
-        
-        overlay.innerHTML = `
-          <div style="text-align: center; color: white;">
-            <div style="width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
-            <p style="font-size: 1.2rem; margin: 0;">Logging you in...</p>
-          </div>
-        `;
-        
-        document.body.appendChild(overlay);
-        
-        // Add CSS animation
-        const style = document.createElement('style');
-        style.textContent = `
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `;
-        document.head.appendChild(style);
-        
-        setTimeout(() => {
-          overlay.style.opacity = '1';
-        }, 100);
+        // Show Nexus loading popup
+        if (typeof showLoadingPopup === 'function') {
+          showLoadingPopup('Signing In...', 'Please wait while we verify your credentials...');
+        }
+      }
+      if (formData.get('signUp')) {
+        // Show Nexus loading popup for signup
+        if (typeof showLoadingPopup === 'function') {
+          showLoadingPopup('Creating Account...', 'Please wait while we create your account...');
+        }
       }
     });
+  }
+  
+  // Check if user came from search engine
+  checkRedirectCondition();
+  
+  function checkRedirectCondition() {
+    // Check if user came from search engine or direct access
+    const referrer = document.referrer;
+    const isFromSearchEngine = referrer && (
+      referrer.includes('google.com') ||
+      referrer.includes('bing.com') ||
+      referrer.includes('yahoo.com') ||
+      referrer.includes('duckduckgo.com')
+    );
+    
+    // Show redirect popup if not from search engine
+    if (!isFromSearchEngine && !sessionStorage.getItem('nexus_visited')) {
+      showRedirectPopup();
+      sessionStorage.setItem('nexus_visited', 'true');
+    }
+  }
+  
+  function showRedirectPopup() {
+    // Create redirect popup
+    const redirectOverlay = document.createElement('div');
+    redirectOverlay.className = 'redirect-popup-overlay';
+    redirectOverlay.innerHTML = `
+      <div class="redirect-popup">
+        <h2>Welcome to Nexus</h2>
+        <p>Preparing your social experience...</p>
+        <div class="redirect-loading-spinner"></div>
+        <div class="redirect-progress">
+          <div class="redirect-progress-bar"></div>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(redirectOverlay);
+    
+    // Show popup
+    setTimeout(() => {
+      redirectOverlay.classList.add('show');
+    }, 100);
+    
+    // Auto redirect after 3 seconds
+    setTimeout(() => {
+      redirectOverlay.classList.remove('show');
+      setTimeout(() => {
+        document.body.removeChild(redirectOverlay);
+      }, 500);
+    }, 3500);
   }
 
   /* help model java script by Gourav */
@@ -96,7 +114,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   submitQueryButton.addEventListener("click", function () {
     helpModal.style.display = "none";
-    submissionSuccessModal.style.display = "block";
+    // Show success popup instead of modal
+    if (typeof showSuccessPopup === 'function') {
+      showSuccessPopup('Query Submitted!', 'Your query has been successfully submitted. We will get back to you shortly!');
+    } else {
+      submissionSuccessModal.style.display = "block";
+    }
   });
 
   okButton.addEventListener("click", function () {
