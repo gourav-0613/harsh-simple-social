@@ -15,15 +15,7 @@ if(isset($_POST['signUp'])){
      $checkEmail="SELECT * From users where email='$email' OR username='$username'";
      $result=$conn->query($checkEmail);
      if($result->num_rows>0){
-        echo "<script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof showErrorPopup === 'function') {
-                showErrorPopup('Registration Failed', 'Email or Username already exists!');
-            } else {
-                alert('Email or Username already exists!');
-            }
-        });
-        </script>";
+        $signup_error = "Email or Username already exists!";
      }
      else{
         $insertQuery="INSERT INTO users(firstName,lastName,username,email,password)
@@ -31,30 +23,10 @@ if(isset($_POST['signUp'])){
             if($conn->query($insertQuery)==TRUE){
                 // Update posts_count to 0 for new users
                 $conn->query("UPDATE users SET posts_count = 0 WHERE email = '$email'");
-                echo "<script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    if (typeof showSuccessPopup === 'function') {
-                        showSuccessPopup('Account Created Successfully!', 'Welcome to Nexus! Your account has been created.');
-                        setTimeout(() => {
-                            window.location.href = 'index.php';
-                        }, 2000);
-                    } else {
-                        alert('Account created successfully!');
-                        window.location.href = 'index.php';
-                    }
-                });
-                </script>";
+                $signup_success = true;
             }
             else{
-                echo "<script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    if (typeof showErrorPopup === 'function') {
-                        showErrorPopup('Registration Error', 'There was an error creating your account. Please try again.');
-                    } else {
-                        alert('There was an error creating your account. Please try again.');
-                    }
-                });
-                </script>";
+                $signup_error = "There was an error creating your account. Please try again.";
             }
      }
 }
@@ -74,30 +46,10 @@ if(isset($_POST['signIn'])){
     $_SESSION['user_id']=$row['id'];
     $_SESSION['username']=$row['username'];
     $_SESSION['email']=$row['email'];
-    echo "<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof showSuccessPopup === 'function') {
-            showSuccessPopup('Login Successful!', 'Welcome back to Nexus!');
-            setTimeout(() => {
-                window.location.href = 'homepage.php';
-            }, 1500);
-        } else {
-            alert('Login successful!');
-            window.location.href = 'homepage.php';
-        }
-    });
-    </script>";
+    $login_success = true;
    }
    else{
-    echo "<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof showErrorPopup === 'function') {
-            showErrorPopup('Login Failed', 'Incorrect email/username or password.');
-        } else {
-            alert('Incorrect email/username or password.');
-        }
-    });
-    </script>";
+    $login_error = "Incorrect email/username or password.";
    }
 
 }
@@ -114,6 +66,33 @@ if(isset($_POST['signIn'])){
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
+  <div class="top-links">
+    <a href="index.php">Back to Login</a>
+  </div>
+
+  <div class="main-container">
+    <div class="left-section">
+      <div class="intro-section">
+        <h1>Nexus</h1>
+        <p class="tagline">Connect. Share. Inspire.</p>
+      </div>
+      <div class="empty-box"></div>
+    </div>
+
+    <div class="right-section">
+      <div class="auth-forms-wrapper">
+        <!-- Processing message -->
+        <div class="auth-box visible">
+          <h1 class="form-title">Processing...</h1>
+          <p style="text-align: center; color: var(--subtle-accent); margin-bottom: 20px;">
+            Please wait while we process your request.
+          </p>
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Custom Nexus Popups -->
   <div id="nexus-popup-overlay" class="nexus-popup-overlay">
     <div id="nexus-popup" class="nexus-popup">
@@ -126,5 +105,33 @@ if(isset($_POST['signIn'])){
   </div>
   
   <script src="nexus-popups.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      <?php if (isset($login_success) && $login_success): ?>
+        showSuccessPopup('Login Successful!', 'Welcome back to Nexus!');
+        setTimeout(() => {
+          window.location.href = 'homepage.php';
+        }, 2000);
+      <?php elseif (isset($login_error)): ?>
+        showErrorPopup('Login Failed', '<?php echo addslashes($login_error); ?>');
+        setTimeout(() => {
+          window.location.href = 'index.php';
+        }, 3000);
+      <?php elseif (isset($signup_success) && $signup_success): ?>
+        showSuccessPopup('Account Created Successfully!', 'Welcome to Nexus! Your account has been created.');
+        setTimeout(() => {
+          window.location.href = 'index.php';
+        }, 2000);
+      <?php elseif (isset($signup_error)): ?>
+        showErrorPopup('Registration Failed', '<?php echo addslashes($signup_error); ?>');
+        setTimeout(() => {
+          window.location.href = 'index.php';
+        }, 3000);
+      <?php else: ?>
+        // No action needed, redirect back to index
+        window.location.href = 'index.php';
+      <?php endif; ?>
+    });
+  </script>
 </body>
 </html>
