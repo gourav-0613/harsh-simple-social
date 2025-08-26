@@ -34,7 +34,7 @@
             <div class="input-group">
                 <i class="fas fa-envelope"></i>
                 <input type="email" id="verification-email" placeholder="Enter your email" required>
-                <label for="verification-email">Email Address</label>
+                <label for="verification-email">Enter your email</label>
             </div>
             <button type="submit" class="btn">Verify Email</button>
           </form>

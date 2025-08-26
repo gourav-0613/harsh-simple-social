@@ -113,7 +113,7 @@ if (isset($_REQUEST['publish-btn']) && $_REQUEST['publish-btn'] == "true") {
         <p><strong>Version:</strong> 1.0</p>
         <p><strong>Email:</strong> support@nexus.com</p>
         <br>
-        <p style="text-align: center; font-style: italic;">"Connect. Share. Inspire."</p>
+        <p style="text-align: center; font-style: italic;">"Where you voice becomes a Vibe"</p>
       </div>
     </div>
   </div>

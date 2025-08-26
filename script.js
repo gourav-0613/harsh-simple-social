@@ -5,18 +5,23 @@ document.addEventListener("DOMContentLoaded", function () {
   const signInForm = document.getElementById('signIn'); // Still targets by ID
   const signUpForm = document.getElementById('signup'); // Still targets by ID
 
-  signUpButton.addEventListener('click', function () {
-    signInForm.classList.remove('visible');
-    signInForm.classList.add('hidden');
-    signUpForm.classList.remove('hidden');
-    signUpForm.classList.add('visible');
-  });
-  signInButton.addEventListener('click', function () {
-    signInForm.classList.remove('hidden');
-    signInForm.classList.add('visible');
-    signUpForm.classList.remove('visible');
-    signUpForm.classList.add('hidden');
-  });
+  if (signUpButton) {
+    signUpButton.addEventListener('click', function () {
+      signInForm.classList.remove('visible');
+      signInForm.classList.add('hidden');
+      signUpForm.classList.remove('hidden');
+      signUpForm.classList.add('visible');
+    });
+  }
+  
+  if (signInButton) {
+    signInButton.addEventListener('click', function () {
+      signInForm.classList.remove('hidden');
+      signInForm.classList.add('visible');
+      signUpForm.classList.remove('visible');
+      signUpForm.classList.add('hidden');
+    });
+  }
 
   // Add login animation
   const loginForm = document.querySelector('form[action="register.php"]');
@@ -80,13 +85,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const submissionSuccessModal = document.getElementById("submissionSuccessModal");
   const okButton = document.getElementById("okButton");
 
-  helpBtn.addEventListener("click", function () {
-    helpModal.style.display = "block";
-  });
+  if (helpBtn) {
+    helpBtn.addEventListener("click", function () {
+      helpModal.style.display = "block";
+    });
+  }
 
-  closeHelp.addEventListener("click", function () {
-    helpModal.style.display = "none";
-  });
+  if (closeHelp) {
+    closeHelp.addEventListener("click", function () {
+      helpModal.style.display = "none";
+    });
+  }
 
   window.addEventListener("click", function (event) {
     if (event.target === helpModal) {
@@ -94,19 +103,59 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  submitQueryButton.addEventListener("click", function () {
-    helpModal.style.display = "none";
-    // Show success popup instead of modal
-    if (typeof showSuccessPopup === 'function') {
-      showSuccessPopup('Query Submitted!', 'Your query has been successfully submitted. We will get back to you shortly!');
-    } else {
-      submissionSuccessModal.style.display = "block";
-    }
-  });
+  if (submitQueryButton) {
+    submitQueryButton.addEventListener("click", function (e) {
+      e.preventDefault(); // Prevent default form submission
+      
+      // Get form data
+      const query = document.getElementById('helpQuery').value;
+      const email = document.getElementById('helpEmail').value;
+      
+      // Validate inputs
+      if (!query || !email) {
+        if (typeof showErrorPopup === 'function') {
+          showErrorPopup('Error', 'Please fill out both query and email fields.');
+        }
+        return;
+      }
+      
+      // Submit form data via AJAX
+      const formData = new FormData();
+      formData.append('helpQuery', query);
+      formData.append('helpEmail', email);
+      formData.append('submitQueryButton', 'true');
+      
+      fetch('helpQuerySubmit.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        console.log('Response received:', response);
+        return response.json(); // Ensure this is set to handle JSON
+      })
+      .then(data => {
+        helpModal.style.display = "none";
+        // Show success popup
+        if (typeof showSuccessPopup === 'function') {
+            showSuccessPopup('Query Submitted!', 'Your query has been successfully submitted. We will get back to you shortly!', 3000);
+        } else {
+            submissionSuccessModal.style.display = "block";
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        if (typeof showErrorPopup === 'function') {
+            showErrorPopup('Error', 'There was a problem submitting your query. Please try again.');
+        }
+      });
+    });
+  }
 
-  okButton.addEventListener("click", function () {
-    submissionSuccessModal.style.display = "none";
-  });
+  if (okButton) {
+    okButton.addEventListener("click", function () {
+      submissionSuccessModal.style.display = "none";
+    });
+  }
 
   window.addEventListener("click", function (event) {
     if (event.target === submissionSuccessModal) {
@@ -120,13 +169,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const btn = document.getElementById("contactBtn");
   const span = document.getElementById("contactclose-btn");
 
-  btn.onclick = function () {
-    contactModal.style.display = "block";
-  };
+  if (btn) {
+    btn.onclick = function () {
+      contactModal.style.display = "block";
+    };
+  }
 
-  span.onclick = function () {
-    contactModal.style.display = "none";
-  };
+  if (span) {
+    span.onclick = function () {
+      contactModal.style.display = "none";
+    };
+  }
 
   window.onclick = function (event) {
     if (event.target == contactModal) {
