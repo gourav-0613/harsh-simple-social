@@ -488,6 +488,47 @@ body {
   transition: color 0.3s ease;
 }
 
+/* Privacy Settings Styles */
+.privacy-settings {
+  padding: 20px 25px;
+  border-bottom: 1px solid var(--post-border);
+}
+
+.privacy-settings h3 {
+  color: var(--dark-text);
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.privacy-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(198, 172, 143, 0.1);
+}
+
+.privacy-option:last-child {
+  border-bottom: none;
+}
+
+.privacy-option-info {
+  flex-grow: 1;
+}
+
+.privacy-option-title {
+  color: var(--dark-text);
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.privacy-option-desc {
+  color: var(--subtle-accent);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
 /* Toggle Switch Styles */
 .switch {
   position: relative;
