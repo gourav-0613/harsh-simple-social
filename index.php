@@ -22,10 +22,14 @@
     <div class="left-section">
       <div class="intro-section">
         <h1>Nexus</h1>
-        <p class="tagline">Connect. Share. Inspire.</p>
+        <p class="tagline">Where your Voice become a Vibe</p>
       </div>
       <!-- This is the new empty container for spacing -->
       <div class="empty-box"></div>
+       <video class="promo-video" width="100%" controls>
+          <source src="https://media.istockphoto.com/id/2171109849/video/viral-video-social-media-image-based-social-media-generation-z-like-button-tutorial-dancing.mp4?s=mp4-640x640-is&k=20&c=08f1G_7rcyWwHB2cTy2YdXudlMcq1CuVpPDPSR9_T2o=" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
     </div>
 
     <!-- Right column for the authentication forms -->
@@ -54,8 +58,12 @@
             ------OR------
           </p>
           <div class="icons">
-            <i class="fab fa-google"></i>
-            <i class="fab fa-facebook"></i>
+<a href="https://www.google.com" class="social-icon" title="Sign in with Google" target="_blank" onclick="alert('Google link clicked!');">
+              <i class="fab fa-google"></i>
+            </a>
+<a href="https://www.facebook.com" class="social-icon" title="Sign in with Facebook" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
           </div>
           <div class="links">
             <p>Don't have any account yet?</p>
@@ -97,9 +105,13 @@
           <p class="or">
             ------OR------
           </p>
-          <div class="icons">
-            <i class="fab fa-google"></i>
-            <i class="fab fa-facebook"></i>
+<div class="icons">
+            <a href="https://www.google.com" class="social-icon" title="Sign up with Google">
+              <i class="fab fa-google"></i>
+            </a>
+<a href="https://www.facebook.com" class="social-icon" title="Sign up with Facebook">
+              <i class="fab fa-facebook"></i>
+            </a>
           </div>
           <div class="links">
             <p>Already Have Account ?</p>
@@ -109,6 +121,7 @@
       </div>
     </div>
   </div>
+
 
 
   <!-- Help Modal -->
