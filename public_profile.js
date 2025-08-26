@@ -199,6 +199,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 })
                 .catch(error => console.error('Error:', error));
+        } else if (followAction === 'cancel_request') {
+            formData.append('action', 'cancel_request');
+            formData.append('user_id', currentUser.id);
+            
+            fetch('api/follow_requests.php', { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showSuccessPopup('Request Cancelled', 'Follow request cancelled');
+                        loadUserProfile(); // Refresh profile
+                    } else {
+                        showErrorPopup('Error', data.error || 'Could not cancel request');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         }
     }
     

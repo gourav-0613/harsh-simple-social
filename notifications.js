@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (notification.post_id && (notification.type === 'like' || notification.type === 'comment')) {
                 window.location.href = 'homepage.php'; // In a full implementation, this would open the specific post
             } else if (notification.type === 'follow') {
-                window.location.href = `profile.php?user=${notification.from_username}`;
+                window.location.href = `public_profile.php?user=${notification.from_username}`;
             }
         });
         

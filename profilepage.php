@@ -79,6 +79,28 @@ $current_user = array_merge([
     </div>
   </div>
 
+  <div class="popup-overlay hidden" id="privacy-popup">
+    <div class="popup-content settings-popup-content">
+      <button class="popup-close-btn" id="privacy-close-btn">&times;</button>
+      <h2>Privacy Settings</h2>
+      <div class="privacy-settings">
+        <div class="privacy-option">
+          <div class="privacy-option-info">
+            <div class="privacy-option-title">Private Account</div>
+            <div class="privacy-option-desc">When your account is private, only people you approve can see your photos and videos on Nexus. Your existing followers won't be affected.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="privateAccountToggle">
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+      <div style="padding: 20px 25px;">
+        <button class="popup-btn cancel" id="privacy-cancel-btn">Done</button>
+      </div>
+    </div>
+  </div>
+
   <div class="popup-overlay hidden" id="underConstructionModal">
     <div class="popup-content under-construction-content">
       <h2>Coming Soon!</h2>

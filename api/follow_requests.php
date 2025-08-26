@@ -81,6 +81,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         echo json_encode(['success' => true]);
     }
+    
+    if ($action === 'cancel_request') {
+        $target_user_id = intval($_POST['user_id']);
+        
+        // Remove the request
+        $conn->query("DELETE FROM follow_requests WHERE requester_id = $current_user_id AND requested_id = $target_user_id");
+        
+        echo json_encode(['success' => true]);
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
