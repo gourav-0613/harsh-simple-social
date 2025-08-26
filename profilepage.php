@@ -122,5 +122,6 @@ $current_user = array_merge([
 
   <script src="profile.js"></script>
   <script src="dark-mode.js"></script>
+  <script src="nexus-popups.js"></script>
 </body>
 </html>

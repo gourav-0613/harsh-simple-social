@@ -6,19 +6,28 @@ header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $username = $_GET['username'] ?? '';
+    $user_id = $_GET['user_id'] ?? '';
     
-    if (empty($username)) {
+    if (empty($username) && empty($user_id)) {
         echo json_encode(['error' => 'Username required']);
         exit;
     }
     
     // Get user profile data
-    $sql = "SELECT id, username, firstName, lastName, bio, profile_picture, 
-            followers_count, following_count, posts_count, is_private
-            FROM users WHERE username = ?";
+    if (!empty($username)) {
+        $sql = "SELECT id, username, firstName, lastName, bio, profile_picture, 
+                followers_count, following_count, posts_count, is_private
+                FROM users WHERE username = ?";
+        $param = $username;
+    } else {
+        $sql = "SELECT id, username, firstName, lastName, bio, profile_picture, 
+                followers_count, following_count, posts_count, is_private
+                FROM users WHERE id = ?";
+        $param = $user_id;
+    }
     
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
+    $stmt->bind_param(!empty($username) ? "s" : "i", $param);
     $stmt->execute();
     $result = $stmt->get_result();
     

@@ -104,9 +104,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         } else {
+            const followText = user.is_private ? 'Request to Follow' : 'Follow';
             return `
                 <div class="buttons">
-                    <button class="follow-btn" data-action="follow">Follow</button>
+                    <button class="follow-btn" data-action="follow">${followText}</button>
                     <button onclick="showInfoPopup('Message', 'Messaging feature coming soon!')">Message</button>
                 </div>
             `;
@@ -122,21 +123,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 followAction = 'send_request';
                 document.getElementById('follow-popup-title').textContent = 'Send Follow Request';
                 document.getElementById('follow-popup-message').textContent = 'This account is private. Send a follow request?';
+                document.getElementById('follow-confirm-btn').textContent = 'Send Request';
             } else {
                 followAction = 'follow';
                 document.getElementById('follow-popup-title').textContent = 'Follow User';
                 document.getElementById('follow-popup-message').textContent = `Follow ${user.username}?`;
+                document.getElementById('follow-confirm-btn').textContent = 'Follow';
             }
             followPopup.classList.remove('hidden');
         } else if (action === 'unfollow') {
             followAction = 'unfollow';
             document.getElementById('follow-popup-title').textContent = 'Unfollow User';
             document.getElementById('follow-popup-message').textContent = `Unfollow ${user.username}?`;
+            document.getElementById('follow-confirm-btn').textContent = 'Unfollow';
             followPopup.classList.remove('hidden');
         } else if (action === 'cancel_request') {
             followAction = 'cancel_request';
             document.getElementById('follow-popup-title').textContent = 'Cancel Request';
             document.getElementById('follow-popup-message').textContent = 'Cancel follow request?';
+            document.getElementById('follow-confirm-btn').textContent = 'Cancel Request';
             followPopup.classList.remove('hidden');
         }
     }

@@ -27,6 +27,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const privacyPopup = document.getElementById('privacy-popup');
     const privacyCloseBtn = document.getElementById('privacy-close-btn');
     const privacyCancelBtn = document.getElementById('privacy-cancel-btn');
+    
+    // Load privacy settings on page load
+    loadPrivacySettings();
 
     // --- Helper function for blur animation ---
     function toggleBlur(addBlur) {
@@ -108,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (settingsPrivacyBtn) {
         settingsPrivacyBtn.addEventListener('click', function() {
             settingsPopup.classList.add('hidden');
-            underConstructionModal.classList.remove('hidden');
+            privacyPopup.classList.remove('hidden');
         });
     }
 
@@ -148,6 +151,77 @@ document.addEventListener('DOMContentLoaded', function() {
         cancelLogoutBtn.addEventListener('click', function() {
             logoutConfirmPopup.classList.add('hidden');
             toggleBlur(false);
+        });
+    }
+    
+    // --- Privacy Settings Functionality ---
+    if (privacyCloseBtn) {
+        privacyCloseBtn.addEventListener('click', function() {
+            privacyPopup.classList.add('hidden');
+            toggleBlur(false);
+        });
+    }
+    
+    if (privacyCancelBtn) {
+        privacyCancelBtn.addEventListener('click', function() {
+            privacyPopup.classList.add('hidden');
+            toggleBlur(false);
+        });
+    }
+    
+    // Private Account Toggle
+    if (privateAccountToggle) {
+        privateAccountToggle.addEventListener('change', function() {
+            updatePrivacySetting(this.checked);
+        });
+    }
+    
+    // Load privacy settings function
+    function loadPrivacySettings() {
+        fetch('api/privacy_settings.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && privateAccountToggle) {
+                    privateAccountToggle.checked = data.is_private;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading privacy settings:', error);
+            });
+    }
+    
+    // Update privacy setting function
+    function updatePrivacySetting(isPrivate) {
+        const formData = new FormData();
+        formData.append('action', 'update_privacy');
+        formData.append('is_private', isPrivate ? 1 : 0);
+        
+        fetch('api/privacy_settings.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                if (typeof showSuccessPopup === 'function') {
+                    showSuccessPopup('Privacy Updated', 
+                        isPrivate ? 'Your account is now private' : 'Your account is now public');
+                }
+            } else {
+                if (typeof showErrorPopup === 'function') {
+                    showErrorPopup('Update Failed', data.error || 'Could not update privacy setting');
+                }
+                // Revert toggle on error
+                privateAccountToggle.checked = !isPrivate;
+            }
+        })
+        .catch(error => {
+            console.error('Error updating privacy setting:', error);
+            if (typeof showErrorPopup === 'function') {
+                showErrorPopup('Error', 'An error occurred while updating privacy setting');
+            }
+            // Revert toggle on error
+            privateAccountToggle.checked = !isPrivate;
         });
     }
 

@@ -31,11 +31,26 @@ $current_user = getCurrentUser();
     <main class="main-content">
       <div class="notifications-header">
         <h1>Notifications</h1>
-        <button class="mark-all-read-btn" id="mark-all-read">Mark all as read</button>
+        <div class="notifications-actions">
+          <button class="mark-all-read-btn" id="mark-all-read">Mark all as read</button>
+          <button class="follow-requests-btn" id="follow-requests-btn">Follow Requests</button>
+        </div>
       </div>
 
       <div class="notifications-container" id="notifications-container">
         <!-- Notifications will be loaded here -->
+      </div>
+      
+      <div class="follow-requests-container hidden" id="follow-requests-container">
+        <div class="follow-requests-header">
+          <button class="back-to-notifications-btn" id="back-to-notifications-btn">
+            <i class="fas fa-arrow-left"></i> Back to Notifications
+          </button>
+          <h2>Follow Requests</h2>
+        </div>
+        <div id="follow-requests-list">
+          <!-- Follow requests will be loaded here -->
+        </div>
       </div>
     </main>
 
@@ -61,5 +76,6 @@ $current_user = getCurrentUser();
 
   <script src="notifications.js"></script>
   <script src="dark-mode.js"></script>
+  <script src="nexus-popups.js"></script>
 </body>
 </html>

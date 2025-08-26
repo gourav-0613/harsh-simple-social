@@ -217,27 +217,63 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Send follow request function
     function sendFollowRequest(userId, button) {
-        const formData = new FormData();
-        formData.append('action', 'send_request');
-        formData.append('user_id', userId);
-        
-        fetch('api/follow_requests.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                button.textContent = 'Requested';
-                button.disabled = true;
-                button.style.background = '#95a5a6';
-            } else {
-                alert('Error: ' + (data.error || 'Could not send request'));
-            }
-        })
-        .catch(error => {
-            console.error('Error sending follow request:', error);
-            alert('Error sending follow request');
-        });
+        // First check if the user account is private
+        fetch(`api/user_profile.php?user_id=${userId}`)
+            .then(response => response.json())
+            .then(user => {
+                const formData = new FormData();
+                
+                if (user.is_private) {
+                    // Send follow request for private account
+                    formData.append('action', 'send_request');
+                    formData.append('user_id', userId);
+                    
+                    fetch('api/follow_requests.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            button.textContent = 'Requested';
+                            button.disabled = true;
+                            button.style.background = '#95a5a6';
+                        } else {
+                            alert('Error: ' + (data.error || 'Could not send request'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error sending follow request:', error);
+                        alert('Error sending follow request');
+                    });
+                } else {
+                    // Follow immediately for public account
+                    formData.append('action', 'follow');
+                    formData.append('user_id', userId);
+                    
+                    fetch('api/follow.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.following !== undefined) {
+                            button.textContent = 'Following';
+                            button.disabled = true;
+                            button.style.background = '#27ae60';
+                        } else {
+                            alert('Error: Could not follow user');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error following user:', error);
+                        alert('Error following user');
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error checking user privacy:', error);
+                alert('Error processing request');
+            });
     }
 });
