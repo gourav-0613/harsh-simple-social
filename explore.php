@@ -64,5 +64,6 @@ $current_user = getCurrentUser();
 
   <script src="explore.js"></script>
   <script src="dark-mode.js"></script>
+  <script src="global_interactions.js"></script>
 </body>
 </html>

@@ -25,7 +25,7 @@ $current_user = getCurrentUser();
       <button class="nav-btn" id="home-btn"><i class="fas fa-home"></i><span>Home</span></button>
       <button class="nav-btn" id="add-btn"><i class="fas fa-plus-circle"></i><span>Add</span></button>
       <button class="nav-btn" id="explore-btn"><i class="fas fa-compass"></i><span>Explore</span></button>
-      <button class="nav-btn" id="messages-btn"><i class="fas fa-paper-plane"></i><span>Messages</span></button>
+      <button class="nav-btn" id="messages-btn" onclick="event.preventDefault();"><i class="fas fa-paper-plane"></i><span>Messages</span></button>
     </div>
 
     <main class="main-content">
@@ -56,7 +56,6 @@ $current_user = getCurrentUser();
 
     <div class="right-panel">
       <div class="top-buttons">
-        <button class="top-btn active" id="notifications-btn"><i class="fas fa-heart"></i></button>
         <button class="top-btn" id="logout-btn">Log-out</button>
       </div>
     </div>
@@ -77,5 +76,6 @@ $current_user = getCurrentUser();
   <script src="notifications.js"></script>
   <script src="dark-mode.js"></script>
   <script src="nexus-popups.js"></script>
+  <script src="global_interactions.js"></script> 
 </body>
 </html>

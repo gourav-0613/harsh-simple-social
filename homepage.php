@@ -134,6 +134,7 @@ if (isset($_REQUEST['publish-btn']) && $_REQUEST['publish-btn'] == "true") {
   <script src="dynamic_crop.js"></script>
   <script src="dark-mode.js"></script>
   <script src="nexus-popups.js"></script>
+  <script src="global_interactions.js"></script>
   
   <?php
     // Show success message if post was created

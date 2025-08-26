@@ -18,10 +18,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to add animation class to container
     function addAnimation(animationClass) {
-        mainContainer.classList.add(animationClass);
-        setTimeout(() => {
-            mainContainer.classList.remove(animationClass);
-        }, 500);
+        if (mainContainer) {
+            mainContainer.classList.add(animationClass);
+            setTimeout(() => {
+                mainContainer.classList.remove(animationClass);
+            }, 500);
+        }
     }
     
     // Navigation event listeners
@@ -61,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    if (reelsBtn) {
+    if (messagesBtn) {
         messagesBtn.addEventListener('click', function() {
             addAnimation('blur-it');
             setTimeout(() => {
@@ -73,7 +75,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Logout functionality
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function() {
-            logoutPopup.classList.remove('hidden');
+            if (logoutPopup) {
+                logoutPopup.classList.remove('hidden');
+            }
         });
     }
     
@@ -88,7 +92,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (logoutCancelBtn) {
         logoutCancelBtn.addEventListener('click', function() {
-            logoutPopup.classList.add('hidden');
+            if (logoutPopup) {
+                logoutPopup.classList.add('hidden');
+            }
         });
     }
     
@@ -124,15 +130,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show follow requests
     function showFollowRequests() {
-        notificationsContainer.classList.add('hidden');
-        followRequestsContainer.classList.remove('hidden');
-        loadFollowRequests();
+        if (notificationsContainer && followRequestsContainer) {
+            notificationsContainer.classList.add('hidden');
+            followRequestsContainer.classList.remove('hidden');
+            loadFollowRequests();
+        }
     }
     
     // Show notifications
     function showNotifications() {
-        followRequestsContainer.classList.add('hidden');
-        notificationsContainer.classList.remove('hidden');
+        if (notificationsContainer && followRequestsContainer) {
+            followRequestsContainer.classList.add('hidden');
+            notificationsContainer.classList.remove('hidden');
+        }
     }
     
     // Load follow requests
@@ -140,6 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('api/follow_requests.php')
             .then(response => response.json())
             .then(requests => {
+                if (!followRequestsList) return;
                 if (requests.length === 0) {
                     followRequestsList.innerHTML = '<div class="no-requests-message"><i class="fas fa-user-plus" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i><p>No follow requests</p></div>';
                     return;
@@ -153,7 +164,9 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error loading follow requests:', error);
-                followRequestsList.innerHTML = '<div class="no-requests-message">Error loading follow requests</div>';
+                if (followRequestsList) {
+                    followRequestsList.innerHTML = '<div class="no-requests-message">Error loading follow requests</div>';
+                }
             });
     }
     
@@ -200,19 +213,16 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Remove the request element with animation
                 requestElement.style.opacity = '0';
                 requestElement.style.transform = 'translateX(100px)';
                 setTimeout(() => {
                     requestElement.remove();
                     
-                    // Check if no more requests
-                    if (followRequestsList.children.length === 0) {
+                    if (followRequestsList && followRequestsList.children.length === 0) {
                         followRequestsList.innerHTML = '<div class="no-requests-message"><i class="fas fa-user-plus" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i><p>No follow requests</p></div>';
                     }
                 }, 300);
                 
-                // Show success message
                 if (typeof showSuccessPopup === 'function') {
                     showSuccessPopup('Request ' + (action === 'accept' ? 'Accepted' : 'Declined'), 
                         'Follow request has been ' + (action === 'accept' ? 'accepted' : 'declined'));
@@ -236,6 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('api/notifications.php')
             .then(response => response.json())
             .then(notifications => {
+                if (!notificationsContainer) return;
                 if (notifications.length === 0) {
                     notificationsContainer.innerHTML = '<p class="no-notifications-message">No notifications yet. When someone likes or comments on your posts, you\'ll see it here!</p>';
                     return;
@@ -249,7 +260,9 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error loading notifications:', error);
-                notificationsContainer.innerHTML = '<p class="no-notifications-message">Error loading notifications. Please refresh the page.</p>';
+                if (notificationsContainer) {
+                    notificationsContainer.innerHTML = '<p class="no-notifications-message">Error loading notifications. Please refresh the page.</p>';
+                }
             });
     }
     
@@ -286,7 +299,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        // Add event listeners for follow request actions
         if (notification.type === 'follow_request') {
             const acceptBtn = notificationDiv.querySelector('.accept-request-btn');
             const declineBtn = notificationDiv.querySelector('.decline-request-btn');
@@ -302,13 +314,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
-        // Add click event to mark as read and navigate if needed
         notificationDiv.addEventListener('click', () => {
             markNotificationAsRead(notification.id);
             
-            // Navigate based on notification type
             if (notification.post_id && (notification.type === 'like' || notification.type === 'comment')) {
-                window.location.href = 'homepage.php'; // In a full implementation, this would open the specific post
+                window.location.href = 'homepage.php';
             } else if (notification.type === 'follow') {
                 window.location.href = `public_profile.php?user=${notification.from_username}`;
             }
@@ -330,7 +340,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Remove the notification element or update it
                 notificationElement.style.opacity = '0.5';
                 const actions = notificationElement.querySelector('.notification-actions');
                 if (actions) {
@@ -349,40 +358,26 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get notification icon based on type
     function getNotificationIcon(type) {
         switch (type) {
-            case 'like':
-                return 'fas fa-heart';
-            case 'comment':
-                return 'fas fa-comment';
-            case 'follow':
-                return 'fas fa-user-plus';
-            case 'follow_request':
-                return 'fas fa-user-clock';
-            case 'follow_accept':
-                return 'fas fa-user-check';
-            case 'message':
-                return 'fas fa-envelope';
-            default:
-                return 'fas fa-bell';
+            case 'like': return 'fas fa-heart';
+            case 'comment': return 'fas fa-comment';
+            case 'follow': return 'fas fa-user-plus';
+            case 'follow_request': return 'fas fa-user-clock';
+            case 'follow_accept': return 'fas fa-user-check';
+            case 'message': return 'fas fa-envelope';
+            default: return 'fas fa-bell';
         }
     }
     
     // Get notification message based on type
     function getNotificationMessage(notification) {
         switch (notification.type) {
-            case 'like':
-                return 'liked your post';
-            case 'comment':
-                return 'commented on your post';
-            case 'follow':
-                return 'started following you';
-            case 'follow_request':
-                return 'sent you a follow request';
-            case 'follow_accept':
-                return 'accepted your follow request';
-            case 'message':
-                return 'sent you a message';
-            default:
-                return notification.message;
+            case 'like': return 'liked your post';
+            case 'comment': return 'commented on your post';
+            case 'follow': return 'started following you';
+            case 'follow_request': return 'sent you a follow request';
+            case 'follow_accept': return 'accepted your follow request';
+            case 'message': return 'sent you a message';
+            default: return notification.message;
         }
     }
     
@@ -420,7 +415,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Remove unread class from all notifications
                 document.querySelectorAll('.notification-item.unread').forEach(item => {
                     item.classList.remove('unread');
                 });
@@ -435,10 +429,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const notificationTime = new Date(timestamp);
         const diffInSeconds = Math.floor((now - notificationTime) / 1000);
         
-        if (diffInSeconds < 60) return `${diffInSeconds}s`;
-        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m`;
-        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h`;
-        if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d`;
-        return `${Math.floor(diffInSeconds / 604800)}w`;
+        if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
+        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+        if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+        return `${Math.floor(diffInSeconds / 604800)}w ago`;
     }
 });

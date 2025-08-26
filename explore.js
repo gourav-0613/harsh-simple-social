@@ -14,10 +14,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to add animation class to container
     function addAnimation(animationClass) {
-        mainContainer.classList.add(animationClass);
-        setTimeout(() => {
-            mainContainer.classList.remove(animationClass);
-        }, 500);
+        if (mainContainer) {
+            mainContainer.classList.add(animationClass);
+            setTimeout(() => {
+                mainContainer.classList.remove(animationClass);
+            }, 500);
+        }
     }
     
     // Navigation event listeners
@@ -43,12 +45,12 @@ document.addEventListener('DOMContentLoaded', function() {
         addBtn.addEventListener('click', function() {
             addAnimation('blur-it');
             setTimeout(() => {
-                window.location.href = 'homepage.php';
+                window.location.href = 'homepage.php'; // Or the correct page for adding posts
             }, 300);
         });
     }
     
-    if (reelsBtn) {
+    if (messagesBtn) {
         messagesBtn.addEventListener('click', function() {
             addAnimation('blur-it');
             setTimeout(() => {
@@ -69,7 +71,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Logout functionality
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function() {
-            logoutPopup.classList.remove('hidden');
+            if (logoutPopup) {
+                logoutPopup.classList.remove('hidden');
+            }
         });
     }
     
@@ -84,7 +88,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (logoutCancelBtn) {
         logoutCancelBtn.addEventListener('click', function() {
-            logoutPopup.classList.add('hidden');
+            if (logoutPopup) {
+                logoutPopup.classList.add('hidden');
+            }
         });
     }
     
@@ -99,91 +105,61 @@ document.addEventListener('DOMContentLoaded', function() {
     loadExplorePosts();
     
     // Search functionality
-    let searchTimeout;
-    searchInput.addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            const query = this.value.trim();
-            if (query) {
-                searchUsers(query);
-            } else {
-                loadExplorePosts();
-            }
-        }, 300);
-    });
+    if (searchInput) {
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const query = this.value.trim();
+                if (query) {
+                    searchUsers(query);
+                } else {
+                    loadExplorePosts(); // Go back to showing posts if search is cleared
+                }
+            }, 300);
+        });
+    }
     
     // Load explore posts function
     function loadExplorePosts() {
-        fetch('api/explore.php')
-            .then(response => response.json())
-            .then(posts => {
-                if (posts.length === 0) {
-                    exploreGrid.innerHTML = '<p class="no-posts-message">No posts to explore yet. Check back later!</p>';
+        if (exploreGrid) {
+            exploreGrid.innerHTML = '<p class="no-posts-message">Search for users to get started.</p>';
+        }
+    }
+    
+    // Search users function with improved error handling
+    function searchUsers(query) {
+        fetch(`search_users.php?q=${encodeURIComponent(query)}`)
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error('Server error: ' + text) });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!exploreGrid) return;
+                exploreGrid.innerHTML = '';
+                
+                if (data.error) {
+                    exploreGrid.innerHTML = `<p class="no-posts-message">Error: ${data.error}</p>`;
                     return;
                 }
                 
-                exploreGrid.innerHTML = '';
-                posts.forEach(post => {
-                    const postElement = createExplorePostElement(post);
-                    exploreGrid.appendChild(postElement);
-                });
-            })
-            .catch(error => {
-                console.error('Error loading explore posts:', error);
-                exploreGrid.innerHTML = '<p class="no-posts-message">Error loading posts. Please refresh the page.</p>';
-            });
-    }
-    
-    // Create explore post element
-    function createExplorePostElement(post) {
-        const postDiv = document.createElement('div');
-        postDiv.className = 'explore-post';
-        postDiv.innerHTML = `
-            ${post.type === 'image' ? 
-                `<img src="${post.url}" alt="Post">` : 
-                `<video><source src="${post.url}"></video>`
-            }
-            <div class="explore-post-overlay">
-                <div class="explore-post-stats">
-                    <i class="fas fa-heart"></i>
-                    <span>${post.likes_count}</span>
-                </div>
-                <div class="explore-post-stats">
-                    <i class="fas fa-comment"></i>
-                    <span>${post.comments_count}</span>
-                </div>
-            </div>
-        `;
-        
-        // Add click event to view post details
-        postDiv.addEventListener('click', () => {
-            // For now, just redirect to homepage
-            // In a full implementation, this would open a post modal
-            window.location.href = 'homepage.php';
-        });
-        
-        return postDiv;
-    }
-    
-    // Search users function
-    function searchUsers(query) {
-        fetch(`api/search.php?q=${encodeURIComponent(query)}`)
-            .then(response => response.json())
-            .then(users => {
-                exploreGrid.innerHTML = '';
-                
-                if (users.length === 0) {
+                if (data.length === 0) {
                     exploreGrid.innerHTML = '<p class="no-posts-message">No users found.</p>';
                     return;
                 }
                 
-                users.forEach(user => {
+                data.forEach(user => {
                     const userElement = createUserElement(user);
                     exploreGrid.appendChild(userElement);
                 });
             })
             .catch(error => {
                 console.error('Error searching users:', error);
+                if (exploreGrid) {
+                    exploreGrid.innerHTML = `<p class="no-posts-message">An error occurred while searching. Please check the console for details.</p>`;
+                }
             });
     }
     
@@ -191,89 +167,23 @@ document.addEventListener('DOMContentLoaded', function() {
     function createUserElement(user) {
         const userDiv = document.createElement('div');
         userDiv.className = 'user-result';
+        
+        const profilePic = user.profile_picture || `https://placehold.co/60x60/415A77/FFFFFF?text=${user.username.charAt(0).toUpperCase()}`;
+
         userDiv.innerHTML = `
-            <div class="user-avatar" style="background-image: url('${user.profile_picture || 'https://placehold.co/60x60/415A77/FFFFFF?text=' + (user.username ? user.username.charAt(0).toUpperCase() : 'U')}')"></div>
+            <div class="user-avatar" style="background-image: url('${profilePic}')"></div>
             <div class="user-info">
                 <h3>${user.username}</h3>
                 <p>${user.firstName} ${user.lastName}</p>
                 <p>${user.followers_count} followers</p>
-                <button class="follow-request-btn" data-user-id="${user.id}">Send Request</button>
             </div>
         `;
         
-        // Add follow request functionality
-        const followBtn = userDiv.querySelector('.follow-request-btn');
-        followBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            sendFollowRequest(user.id, followBtn);
-        });
-        
+        // **FIXED**: Navigate to the correct public profile page with the username
         userDiv.addEventListener('click', () => {
             window.location.href = `public_profile.php?user=${user.username}`;
         });
         
         return userDiv;
-    }
-    
-    // Send follow request function
-    function sendFollowRequest(userId, button) {
-        // First check if the user account is private
-        fetch(`api/user_profile.php?user_id=${userId}`)
-            .then(response => response.json())
-            .then(user => {
-                const formData = new FormData();
-                
-                if (user.is_private) {
-                    // Send follow request for private account
-                    formData.append('action', 'send_request');
-                    formData.append('user_id', userId);
-                    
-                    fetch('api/follow_requests.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            button.textContent = 'Requested';
-                            button.disabled = true;
-                            button.style.background = '#95a5a6';
-                        } else {
-                            alert('Error: ' + (data.error || 'Could not send request'));
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error sending follow request:', error);
-                        alert('Error sending follow request');
-                    });
-                } else {
-                    // Follow immediately for public account
-                    formData.append('action', 'follow');
-                    formData.append('user_id', userId);
-                    
-                    fetch('api/follow.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.following !== undefined) {
-                            button.textContent = 'Following';
-                            button.disabled = true;
-                            button.style.background = '#27ae60';
-                        } else {
-                            alert('Error: Could not follow user');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error following user:', error);
-                        alert('Error following user');
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error checking user privacy:', error);
-                alert('Error processing request');
-            });
     }
 });
