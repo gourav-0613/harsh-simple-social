@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Check for updated profile data from localStorage
+    checkForProfileUpdates();
+    
     const profileContainer = document.getElementById('profile-container');
     const userPostsContainer = document.getElementById('user-posts-container');
     const viewArchiveBtn = document.getElementById('view-archive-btn');
@@ -30,6 +33,52 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load privacy settings on page load
     loadPrivacySettings();
+
+    // Function to check for profile updates from edit page
+    function checkForProfileUpdates() {
+        const updatedProfile = localStorage.getItem('updated_profile');
+        if (updatedProfile) {
+            try {
+                const profileData = JSON.parse(updatedProfile);
+                updateProfileDisplay(profileData);
+                localStorage.removeItem('updated_profile'); // Clear after use
+            } catch (error) {
+                console.error('Error parsing updated profile data:', error);
+            }
+        }
+    }
+    
+    // Function to update profile display with new data
+    function updateProfileDisplay(profileData) {
+        // Update username
+        const usernameElement = document.getElementById('profile-username');
+        if (usernameElement && profileData.username) {
+            usernameElement.textContent = profileData.username;
+        }
+        
+        // Update full name
+        const fullNameElement = document.getElementById('profile-fullname');
+        if (fullNameElement && profileData.firstName && profileData.lastName) {
+            fullNameElement.textContent = profileData.firstName + ' ' + profileData.lastName;
+        }
+        
+        // Update bio
+        const bioElement = document.getElementById('profile-bio');
+        if (bioElement && profileData.bio !== undefined) {
+            bioElement.textContent = profileData.bio;
+        }
+        
+        // Update profile picture
+        const profilePicElement = document.getElementById('profile-pic');
+        if (profilePicElement && profileData.profile_picture) {
+            profilePicElement.style.backgroundImage = `url('${profileData.profile_picture}')`;
+        }
+        
+        // Show success message
+        if (typeof showSuccessPopup === 'function') {
+            showSuccessPopup('Profile Updated!', 'Your profile has been updated successfully.');
+        }
+    }
 
     // --- Helper function for blur animation ---
     function toggleBlur(addBlur) {

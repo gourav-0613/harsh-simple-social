@@ -6,7 +6,7 @@ requireLogin();
 $current_user = getCurrentUser();
 // Fallback for missing data
 $current_user = array_merge([
-    'profile_picture' => 'https://placehold.co/150x150/8897AA/FFFFFF?text=User',
+    'profile_picture' => 'https://placehold.co/150x150/C6AC8F/FFFFFF?text=User',
     'username' => 'guest',
     'firstName' => '',
     'lastName' => '',

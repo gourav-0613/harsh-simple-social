@@ -54,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Create FormData object
         const formData = new FormData();
         formData.append('username', userIdInput.value);
-        formData.append('firstName', fullNameInput.value);
-        formData.append('lastName', lastNameInput.value);
+        formData.append('firstName', document.getElementById('firstName').value);
+        formData.append('lastName', document.getElementById('lastName').value);
         formData.append('bio', bioTextarea.value);
         
         // Add profile picture if changed
@@ -75,6 +75,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             if (data.success) {
+                // Update localStorage with new profile data for instant updates
+                const updatedProfile = {
+                    username: userIdInput.value,
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    bio: bioTextarea.value
+                };
+                
+                if (data.profile_picture) {
+                    updatedProfile.profile_picture = data.profile_picture;
+                }
+                
+                localStorage.setItem('updated_profile', JSON.stringify(updatedProfile));
+                
                 if (typeof showSuccessPopup === 'function') {
                     showSuccessPopup('Profile Updated Successfully!', 'Your profile changes have been saved.');
                     setTimeout(() => {

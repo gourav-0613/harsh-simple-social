@@ -6,10 +6,11 @@ requireLogin();
 $current_user = getCurrentUser();
 // Fallback for missing data to prevent errors
 $current_user = array_merge([
-    'profile_picture' => 'https://placehold.co/180x180/8897AA/FFFFFF?text=User',
+    'profile_picture' => 'https://placehold.co/180x180/C6AC8F/FFFFFF?text=User',
     'username' => 'guest',
     'followers_count' => 0,
     'following_count' => 0,
+    'posts_count' => 0,
     'firstName' => 'New',
     'lastName' => 'User',
     'bio' => 'Welcome to your profile!'
