@@ -116,7 +116,7 @@
                 firstName VARCHAR(50) NOT NULL,
                 lastName VARCHAR(50) NOT NULL,
                 bio TEXT,
-                profile_picture VARCHAR(255) DEFAULT 'https://placehold.co/150x150/C6AC8F/FFFFFF?text=User',
+                profile_picture VARCHAR(255) DEFAULT 'https://placehold.co/150x150/8897AA/FFFFFF?text=User',
                 followers_count INT DEFAULT 0,
                 following_count INT DEFAULT 0,
                 posts_count INT DEFAULT 0,
