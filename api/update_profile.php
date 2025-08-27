@@ -23,6 +23,20 @@ $bio = trim($_POST['bio'] ?? $current_user['bio']);
 
 $profile_picture_path = $current_user['profile_picture'];
 
+// Validate username uniqueness if it's being changed
+if ($username !== $current_user['username']) {
+    $check_username = $conn->prepare("SELECT id FROM users WHERE username = ? AND id != ?");
+    $check_username->bind_param("si", $username, $current_user_id);
+    $check_username->execute();
+    $result = $check_username->get_result();
+    
+    if ($result->num_rows > 0) {
+        echo json_encode(['error' => 'Username already exists. Please choose a different username.']);
+        exit;
+    }
+    $check_username->close();
+}
+
 // --- Handle File Upload ---
 if (isset($_FILES['profilePicture']) && $_FILES['profilePicture']['error'] === UPLOAD_ERR_OK) {
     $uploadDir = '../uploads/';
@@ -66,6 +80,35 @@ if (isset($_FILES['profilePicture']) && $_FILES['profilePicture']['error'] === U
     }
 }
 
+// Update username in posts table if username changed
+if ($username !== $current_user['username']) {
+    $update_posts = $conn->prepare("UPDATE posts SET username = ? WHERE user_id = ?");
+    $update_posts->bind_param("si", $username, $current_user_id);
+    $update_posts->execute();
+    $update_posts->close();
+    
+    // Update username in comments table
+    $update_comments = $conn->prepare("UPDATE comments SET username = ? WHERE user_id = ?");
+    $update_comments->bind_param("si", $username, $current_user_id);
+    $update_comments->execute();
+    $update_comments->close();
+    
+    // Update username in stories table if it exists
+    $check_stories = $conn->query("SHOW TABLES LIKE 'stories'");
+    if ($check_stories->num_rows > 0) {
+        $update_stories = $conn->prepare("UPDATE stories SET username = ? WHERE user_id = ?");
+        $update_stories->bind_param("si", $username, $current_user_id);
+        $update_stories->execute();
+        $update_stories->close();
+    }
+    
+    // Update username in notifications table
+    $update_notifications = $conn->prepare("UPDATE notifications SET from_username = ? WHERE from_user_id = ?");
+    $update_notifications->bind_param("si", $username, $current_user_id);
+    $update_notifications->execute();
+    $update_notifications->close();
+}
+
 // --- Update Database ---
 $sql = "UPDATE users SET username = ?, firstName = ?, lastName = ?, bio = ?, profile_picture = ? WHERE id = ?";
 $stmt = $conn->prepare($sql);
@@ -78,6 +121,12 @@ if ($stmt === false) {
 $stmt->bind_param("sssssi", $username, $firstName, $lastName, $bio, $profile_picture_path, $current_user_id);
 
 if ($stmt->execute()) {
+    // Update session data if username changed
+    if ($username !== $current_user['username']) {
+        session_start();
+        $_SESSION['username'] = $username;
+    }
+    
     // Return updated profile data including the new profile picture path
     $response = [
         'success' => true, 

@@ -79,6 +79,10 @@ class NexusPopup {
     info(title, message, duration = 3000) {
         this.show('info', title, message, duration);
     }
+    
+    warning(title, message, duration = 3000) {
+        this.show('warning', title, message, duration);
+    }
 }
 
 // Initialize popup system
@@ -109,6 +113,12 @@ function showLoadingPopup(title, message) {
 function showInfoPopup(title, message, duration = 3000) {
     if (nexusPopup) {
         nexusPopup.info(title, message, duration);
+    }
+}
+
+function showWarningPopup(title, message, duration = 3000) {
+    if (nexusPopup) {
+        nexusPopup.warning(title, message, duration);
     }
 }
 

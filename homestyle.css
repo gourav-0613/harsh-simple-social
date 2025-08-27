@@ -639,31 +639,6 @@ body {
   border-radius: 15px;
 }
 
-/* Crop Container */
-#crop-container {
-  text-align: center;
-  margin: 20px 0;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 20px;
-  border: 2px solid var(--post-border);
-}
-
-#crop-canvas {
-  border: 2px solid var(--accent-highlight);
-  border-radius: 10px;
-  max-width: 100%;
-  box-shadow: 0 4px 15px rgba(198, 172, 143, 0.2);
-}
-
-.crop-controls {
-  margin-top: 20px;
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-}
-
 /* File Input Styling */
 .file-input-label {
   background: linear-gradient(135deg, var(--accent-highlight) 0%, var(--subtle-accent) 100%);

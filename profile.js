@@ -336,6 +336,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     const postElement = createArchivedPostElement(post);
                     userPostsContainer.appendChild(postElement);
                 });
+                
+                // Add back to profile button
+                const backButton = document.createElement('div');
+                backButton.style.gridColumn = '1 / -1';
+                backButton.style.textAlign = 'center';
+                backButton.style.marginTop = '30px';
+                backButton.innerHTML = `
+                    <button class="popup-btn confirm" onclick="loadUserPosts()" style="padding: 12px 30px; font-size: 1rem;">
+                        <i class="fas fa-arrow-left"></i> Back to Profile
+                    </button>
+                `;
+                userPostsContainer.appendChild(backButton);
             })
             .catch(error => {
                 console.error('Error loading archived posts:', error);
@@ -427,6 +439,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function archivePost(postId) {
+        // Show confirmation popup
+        if (typeof showLoadingPopup === 'function') {
+            showLoadingPopup('Archiving Post', 'Please wait while we archive your post...');
+        }
+        
         const formData = new FormData();
         formData.append('action', 'archive');
         formData.append('post_id', postId);
@@ -434,6 +451,10 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('api/user_posts.php', { method: 'POST', body: formData })
         .then(response => response.json())
         .then(data => {
+            if (typeof hidePopup === 'function') {
+                hidePopup();
+            }
+            
             if (data.success) {
                 if (typeof showSuccessPopup === 'function') {
                     showSuccessPopup('Post Archived', 'Post has been successfully archived');
@@ -445,10 +466,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         })
-        .catch(error => console.error('Error archiving post:', error));
+        .catch(error => {
+            if (typeof hidePopup === 'function') {
+                hidePopup();
+            }
+            console.error('Error archiving post:', error);
+            if (typeof showErrorPopup === 'function') {
+                showErrorPopup('Error', 'An error occurred while archiving the post');
+            }
+        });
     }
     
     function unarchivePost(postId) {
+        // Show confirmation popup
+        if (typeof showLoadingPopup === 'function') {
+            showLoadingPopup('Unarchiving Post', 'Please wait while we unarchive your post...');
+        }
+        
         const formData = new FormData();
         formData.append('action', 'unarchive');
         formData.append('post_id', postId);
@@ -456,6 +490,10 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('api/user_posts.php', { method: 'POST', body: formData })
         .then(response => response.json())
         .then(data => {
+            if (typeof hidePopup === 'function') {
+                hidePopup();
+            }
+            
             if (data.success) {
                 if (typeof showSuccessPopup === 'function') {
                     showSuccessPopup('Post Unarchived', 'Post has been successfully unarchived');
@@ -467,11 +505,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         })
-        .catch(error => console.error('Error unarchiving post:', error));
+        .catch(error => {
+            if (typeof hidePopup === 'function') {
+                hidePopup();
+            }
+            console.error('Error unarchiving post:', error);
+            if (typeof showErrorPopup === 'function') {
+                showErrorPopup('Error', 'An error occurred while unarchiving the post');
+            }
+        });
     }
     
     function deletePost(postId) {
         if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+            if (typeof showLoadingPopup === 'function') {
+                showLoadingPopup('Deleting Post', 'Please wait while we delete your post...');
+            }
+            
             const formData = new FormData();
             formData.append('action', 'delete');
             formData.append('post_id', postId);
@@ -479,6 +529,10 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch('api/user_posts.php', { method: 'POST', body: formData })
             .then(response => response.json())
             .then(data => {
+                if (typeof hidePopup === 'function') {
+                    hidePopup();
+                }
+                
                 if (data.success) {
                     if (typeof showSuccessPopup === 'function') {
                         showSuccessPopup('Post Deleted', 'Post has been successfully deleted');
@@ -497,7 +551,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             })
-            .catch(error => console.error('Error deleting post:', error));
+            .catch(error => {
+                if (typeof hidePopup === 'function') {
+                    hidePopup();
+                }
+                console.error('Error deleting post:', error);
+                if (typeof showErrorPopup === 'function') {
+                    showErrorPopup('Error', 'An error occurred while deleting the post');
+                }
+            });
         }
     }
 

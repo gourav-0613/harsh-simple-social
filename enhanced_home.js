@@ -140,7 +140,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentImageFile = file;
                 
                 if (file.type.includes('image')) {
-                    showDynamicImageCropper(file);
+                    // Skip cropping and show image directly
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        mediaPreviewContainer.innerHTML = '';
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.maxWidth = '100%';
+                        img.style.maxHeight = '400px';
+                        img.style.objectFit = 'cover';
+                        img.style.borderRadius = '15px';
+                        mediaPreviewContainer.appendChild(img);
+                        mediaPreviewContainer.style.display = 'flex';
+                    };
+                    reader.readAsDataURL(file);
                 } else if (file.type.includes('video')) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
@@ -155,47 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     };
                     reader.readAsDataURL(file);
                 }
-            }
-        });
-    }
-    
-    // Dynamic image cropping functionality
-    function showDynamicImageCropper(file) {
-        mediaPreviewContainer.style.display = 'none';
-        cropContainer.innerHTML = '';
-        cropContainer.classList.remove('hidden');
-        
-        const cropper = new DynamicImageCropper(cropContainer, {
-            aspectRatio: 1,
-            quality: 0.8,
-            maxWidth: 600,
-            maxHeight: 400
-        });
-        
-        cropper.loadImage(file).then(() => {
-            cropper.onCrop((croppedDataUrl) => {
-                mediaPreviewContainer.innerHTML = '';
-                const img = document.createElement('img');
-                img.src = croppedDataUrl;
-                img.style.maxWidth = '100%';
-                img.style.maxHeight = '400px';
-                img.style.objectFit = 'cover';
-                img.style.borderRadius = '15px';
-                mediaPreviewContainer.appendChild(img);
-                
-                cropContainer.classList.add('hidden');
-                mediaPreviewContainer.style.display = 'flex';
-            });
-            
-            cropper.onCancel(() => {
-                cropContainer.classList.add('hidden');
-                fileInput.value = '';
-                currentImageFile = null;
-            });
-        }).catch(error => {
-            console.error('Error loading image for cropping:', error);
-            if (typeof showErrorPopup === 'function') {
-                showErrorPopup('Error', 'Could not load image for cropping');
             }
         });
     }

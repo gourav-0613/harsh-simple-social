@@ -65,7 +65,6 @@ if (isset($_REQUEST['publish-btn']) && $_REQUEST['publish-btn'] == "true") {
         <h1>Create a New Post</h1>
 
         <div id="media-preview-container"></div>
-        <div id="crop-container" class="hidden"></div>
 
         <form action = "homepage.php" method = "post" enctype="multipart/form-data">
           <label for = "file-input" class = "file-input-label">Select Image or Video</label>
